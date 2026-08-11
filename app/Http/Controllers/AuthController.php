@@ -51,6 +51,7 @@ class AuthController extends Controller
             'password' => $validated['password'],
         ];
 
+        // OWASP A07:2021 - Pesan error generik untuk mencegah user enumeration saat autentikasi gagal
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
         }
@@ -132,6 +133,7 @@ class AuthController extends Controller
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
+            // Validasi Password Server-Side (NIST SP 800-63B: Min 15 Karakter & Cek Kebocoran Data)
             'password' => [
                 'required',
                 'string',

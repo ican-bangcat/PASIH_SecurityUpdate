@@ -69,6 +69,7 @@ class AccountManagementController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
+            // Validasi Password Server-Side (NIST SP 800-63B: Min 15 Karakter & Cek Kebocoran Data)
             'password' => ['required', 'string', 'max:255', Password::min(15)->uncompromised()],
             'role' => ['required', 'string', Rule::exists('roles', 'nama_role')],
             'id_instansi' => ['required', 'exists:instansi,id_instansi'],
@@ -113,6 +114,7 @@ class AccountManagementController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'string', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
+            // Validasi Password Server-Side (NIST SP 800-63B: Min 15 Karakter & Cek Kebocoran Data)
             'password' => ['nullable', 'string', 'max:255', Password::min(15)->uncompromised()],
             'role' => ['required', 'string', Rule::exists('roles', 'nama_role')],
             'id_instansi' => ['required', 'exists:instansi,id_instansi'],
