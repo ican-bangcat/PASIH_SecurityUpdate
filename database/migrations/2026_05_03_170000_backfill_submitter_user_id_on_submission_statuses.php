@@ -7,13 +7,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::table('submission_statuses as ss')
-            ->join('submissions as s', 's.id', '=', 'ss.submission_id')
-            ->where('ss.status', 'submitted')
-            ->whereNull('ss.user_id')
-            ->update([
-                'ss.user_id' => DB::raw('s.submitter_id'),
-            ]);
+        $statuses = DB::table('submission_statuses')
+            ->join('submissions', 'submissions.id', '=', 'submission_statuses.submission_id')
+            ->where('submission_statuses.status', 'submitted')
+            ->whereNull('submission_statuses.user_id')
+            ->select('submission_statuses.id as ss_id', 'submissions.submitter_id')
+            ->get();
+
+        foreach ($statuses as $status) {
+            DB::table('submission_statuses')
+                ->where('id', $status->ss_id)
+                ->update(['user_id' => $status->submitter_id]);
+        }
     }
 
     public function down(): void
