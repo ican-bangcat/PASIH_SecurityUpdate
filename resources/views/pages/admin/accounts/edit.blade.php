@@ -46,13 +46,12 @@
             <input
               type="password"
               name="password"
-              pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}"
-              title="Minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka."
+              minlength="15"
               placeholder="Kosongkan jika tidak diubah"
               class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm placeholder:text-[14px]"
             >
             <span class="mt-1 block text-xs text-slate-500">
-              Minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
+              Minimal 15 karakter.
             </span>
           </div>
         </div>

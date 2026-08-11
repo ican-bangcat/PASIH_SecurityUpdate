@@ -41,6 +41,7 @@
             type="password"
             name="password"
             required
+            minlength="15"
             placeholder="Masukkan Password"
             class="w-full h-11 px-4 pr-11 py-2 rounded border border-[#B9B9B9] bg-white text-sm placeholder:text-[14px]"
           >
@@ -62,7 +63,7 @@
             </svg>
           </button>
         </div>
-        <p class="mt-1 text-xs text-slate-500">Minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.</p>
+        <p class="mt-1 text-xs text-slate-500">Minimal 15 karakter.</p>
       </label>
 
       <label class="block text-sm font-medium text-slate-700">
@@ -73,6 +74,7 @@
             type="password"
             name="password_confirmation"
             required
+            minlength="15"
             placeholder="Masukkan Password"
             class="w-full h-11 px-4 pr-11 py-2 rounded border border-[#B9B9B9] bg-white text-sm placeholder:text-[14px]"
           >

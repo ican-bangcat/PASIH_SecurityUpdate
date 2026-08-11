@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class AccountManagementController extends Controller
 {
@@ -68,11 +69,9 @@ class AccountManagementController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'max:255', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password' => ['required', 'string', 'max:255', Password::min(15)->uncompromised()],
             'role' => ['required', 'string', Rule::exists('roles', 'nama_role')],
             'id_instansi' => ['required', 'exists:instansi,id_instansi'],
-        ], [
-            'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, dan angka.',
         ]);
 
         $roleId = Role::query()->where('nama_role', $validated['role'])->value('id_role');
@@ -114,11 +113,9 @@ class AccountManagementController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'string', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
-            'password' => ['nullable', 'string', 'min:8', 'max:255', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password' => ['nullable', 'string', 'max:255', Password::min(15)->uncompromised()],
             'role' => ['required', 'string', Rule::exists('roles', 'nama_role')],
             'id_instansi' => ['required', 'exists:instansi,id_instansi'],
-        ], [
-            'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, dan angka.',
         ]);
 
         $roleId = Role::query()->where('nama_role', $validated['role'])->value('id_role');

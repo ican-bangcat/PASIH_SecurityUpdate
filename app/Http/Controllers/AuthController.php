@@ -137,7 +137,7 @@ class AuthController extends Controller
                 'string',
                 'max:255',
                 'confirmed',
-                PasswordRule::min(8)->letters()->mixedCase()->numbers(),
+                PasswordRule::min(15)->uncompromised(),
             ],
         ]);
 
