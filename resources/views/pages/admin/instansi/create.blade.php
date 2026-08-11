@@ -32,11 +32,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-semibold text-slate-700">Nama Instansi <span class="text-red-500">*</span></label>
-            <input type="text" name="nama_instansi" value="{{ old('nama_instansi') }}" required placeholder="Masukkan Jenis Instansi" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm placeholder:text-[14px]">
+            <input type="text" name="nama_instansi" value="{{ old('nama_instansi') }}" required placeholder="Masukkan Nama Instansi" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm placeholder:text-[14px]">
           </div>
           <div>
             <label class="block text-sm font-semibold text-slate-700">Jenis <span class="text-red-500">*</span></label>
-            <input type="text" name="jenis_instansi" value="{{ old('jenis_instansi') }}" required placeholder="Masukkan Alamat Instansi" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm placeholder:text-[14px]">
+            <input type="text" name="jenis_instansi" value="{{ old('jenis_instansi') }}" required placeholder="Masukkan Jenis Instansi" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm placeholder:text-[14px]">
           </div>
         </div>
 
