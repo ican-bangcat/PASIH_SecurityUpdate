@@ -31,36 +31,37 @@
                             </svg>
                         </a>
                         <a href="https://riau.kemenkum.go.id/" target="_blank" class="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white border-2 border-slate-200 text-blue-900 font-bold text-base hover:border-blue-900 transition-all">
-                            Website Kemenkumham Riau
+                            Website Kemenkum Riau
                         </a>
                     </div>
                 </div>
 
                 <!-- Image / Graphics Content -->
-                <div class="relative">
-                    <!-- Placeholder for the main hero image (building/people shaking hands) -->
-                    <div class="relative rounded-3xl overflow-hidden aspect-[4/3] bg-slate-200 shadow-2xl">
-                        <!-- We use a gradient placeholder if no image is available yet -->
-                        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-blue-900/40 mix-blend-multiply"></div>
-                        <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Hero Image" class="w-full h-full object-cover" />
+                <div class="flex flex-col items-center lg:items-start space-y-5">
+                    <!-- Main hero image (half size) -->
+                    <div class="w-full max-w-md mx-auto aspect-[16/9] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 shadow-xl border border-slate-200/80 relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-blue-900/30 mix-blend-multiply"></div>
+                        <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hero Image" class="w-full h-full object-cover" />
                     </div>
 
-                    <!-- Floating Stat Card 1 -->
-                    <div class="absolute -bottom-6 -left-6 bg-blue-900 text-white p-6 rounded-2xl shadow-xl max-w-[200px] border border-blue-800">
-                        <div class="text-3xl font-black text-yellow-500 mb-1">500+</div>
-                        <div class="text-sm font-semibold text-blue-100">Berkas Fasilitasi Selesai</div>
-                    </div>
-
-                    <!-- Floating Stat Card 2 -->
-                    <div class="absolute -top-6 -right-6 bg-white text-blue-900 p-5 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-black">12</div>
-                            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Kab/Kota</div>
+                    <!-- 13 Small Logos Under Hero Image -->
+                    <div class="w-full max-w-md mx-auto pt-2">
+                        <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5 text-center lg:text-left">13 Instansi &amp; Kab/Kota Terintegrasi:</div>
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-1.5">
+                            @php
+                                $instansiList = [
+                                    'Pemprov Riau', 'Kota Pekanbaru', 'Kota Dumai', 'Kab. Kampar',
+                                    'Kab. Bengkalis', 'Kab. Indragiri Hilir', 'Kab. Indragiri Hulu',
+                                    'Kab. Pelalawan', 'Kab. Rokan Hilir', 'Kab. Rokan Hulu',
+                                    'Kab. Siak', 'Kab. Kuantan Singingi', 'Kab. Kep. Meranti'
+                                ];
+                            @endphp
+                            @foreach($instansiList as $nama)
+                                <div class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white border border-slate-200 shadow-xs hover:border-yellow-400 hover:bg-yellow-50/50 transition-all cursor-default" title="{{ $nama }}">
+                                    <img src="{{ asset('images/LogoInstansi.png') }}" alt="{{ $nama }}" class="w-3.5 h-3.5 object-contain">
+                                    <span class="text-[10px] font-semibold text-slate-700 whitespace-nowrap">{{ $nama }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -93,7 +94,7 @@
                         <p class="text-slate-600 text-sm leading-relaxed mb-6">
                             Sistem penerimaan dan pemberkasan secara digital untuk rancangan peraturan daerah yang terpusat dan aman.
                         </p>
-                        <a href="#alur" class="text-yellow-500 font-semibold text-sm uppercase tracking-wide inline-flex items-center hover:text-yellow-600">
+                        <a href="{{ route('public.analysis.index') }}" class="text-yellow-500 font-semibold text-sm uppercase tracking-wide inline-flex items-center hover:text-yellow-600">
                             Pelajari <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                         </a>
                     </div>
@@ -115,7 +116,7 @@
                         <p class="text-slate-600 text-sm leading-relaxed mb-6">
                             Pemeriksaan mendalam dan sinkronisasi peraturan oleh tim ahli hukum dan analis untuk menjamin kualitas hukum.
                         </p>
-                        <a href="#alur" class="text-yellow-500 font-semibold text-sm uppercase tracking-wide inline-flex items-center hover:text-yellow-600">
+                        <a href="{{ route('public.analysis.index') }}" class="text-yellow-500 font-semibold text-sm uppercase tracking-wide inline-flex items-center hover:text-yellow-600">
                             Pelajari <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                         </a>
                     </div>
@@ -137,7 +138,7 @@
                         <p class="text-slate-600 text-sm leading-relaxed mb-6">
                             Penelaahan komprehensif oleh Biro Hukum Provinsi dan penerbitan Surat Hasil Fasilitasi resmi secara tuntas.
                         </p>
-                        <a href="#alur" class="text-yellow-500 font-semibold text-sm uppercase tracking-wide inline-flex items-center hover:text-yellow-600">
+                        <a href="{{ route('public.analysis.index') }}" class="text-yellow-500 font-semibold text-sm uppercase tracking-wide inline-flex items-center hover:text-yellow-600">
                             Pelajari <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                         </a>
                     </div>
@@ -203,63 +204,6 @@
         </div>
     </section>
 
-    <!-- Steps (Cara Kerja) Section -->
-    <section id="alur" class="py-20 bg-slate-50 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                <div class="max-w-2xl">
-                    <span class="text-yellow-500 font-bold text-sm tracking-widest uppercase block mb-2">Tahapan Sistem</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-blue-900">Bagaimana Kami Menyelesaikannya</h2>
-                </div>
-                <a href="{{ route('public.analysis.index') }}" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-sm transition-colors whitespace-nowrap">
-                    Lihat Arsip Produk Hukum
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Step 1 -->
-                <div class="relative">
-                    <div class="text-6xl font-black text-slate-200 mb-4 tracking-tighter">01</div>
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md mb-6 border border-slate-100 text-yellow-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                    </div>
-                    <h4 class="text-lg font-bold text-blue-900 mb-2">Input Dokumen</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Tim Kanwil/Pemda mengunggah Draft Rancangan Peraturan &amp; Analisa Konsepsi ke dalam sistem.</p>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="relative lg:mt-8">
-                    <div class="text-6xl font-black text-slate-200 mb-4 tracking-tighter">02</div>
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md mb-6 border border-slate-100 text-yellow-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" /></svg>
-                    </div>
-                    <h4 class="text-lg font-bold text-blue-900 mb-2">Pemeriksaan</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Analisis pasal sandingan dan rapat harmonisasi oleh tim spesialis hukum.</p>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="relative">
-                    <div class="text-6xl font-black text-slate-200 mb-4 tracking-tighter">03</div>
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md mb-6 border border-slate-100 text-yellow-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    </div>
-                    <h4 class="text-lg font-bold text-blue-900 mb-2">Fasilitasi Setda</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Penelaahan komprehensif oleh Biro Hukum Provinsi dan penyesuaian akhir draf.</p>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="relative lg:mt-8">
-                    <div class="text-6xl font-black text-slate-200 mb-4 tracking-tighter">04</div>
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md mb-6 border border-slate-100 text-yellow-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <h4 class="text-lg font-bold text-blue-900 mb-2">Selesai</h4>
-                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Penerbitan Surat Hasil Fasilitasi resmi &amp; pengarsipan digital terintegrasi di PASIH.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
 @endsection
 
 @section('public_footer')
@@ -271,11 +215,11 @@
                 <div class="lg:col-span-4">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center overflow-hidden shrink-0">
-                            <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo PASIH" class="w-full h-full object-contain p-1" />
+                            <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="w-full h-full object-contain p-1" />
                         </div>
                         <div>
                             <span class="font-extrabold text-xl text-white tracking-wide">PASIH</span>
-                            <div class="text-[10px] text-blue-300 font-bold tracking-wider uppercase mt-0.5">Kemenkumham Riau</div>
+                            <div class="text-[10px] text-blue-300 font-bold tracking-wider uppercase mt-0.5">Kemenkum Riau</div>
                         </div>
                     </div>
                     <p class="text-blue-100/80 text-sm leading-relaxed mb-8">

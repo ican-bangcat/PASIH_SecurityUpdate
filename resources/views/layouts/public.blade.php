@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'PASIH')</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,8 +24,9 @@
 
     <header class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img class="w-12 h-12 object-contain rounded-md" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
+            <div class="flex items-center gap-2.5">
+                <img class="h-11 w-auto object-contain rounded-md" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
+                <img class="h-11 w-auto object-contain rounded-md" src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA">
                 <div class="flex flex-col">
                     <span class="text-xl font-extrabold text-blue-900 leading-tight">PASIH</span>
                     <span class="text-[10px] font-semibold text-slate-500 max-w-[200px] leading-snug">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
@@ -33,7 +37,6 @@
                 <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                     <a href="#beranda" class="text-blue-900 transition-colors">Beranda</a>
                     <a href="#tentang" class="hover:text-blue-900 transition-colors">Tentang Sistem</a>
-                    <a href="#alur" class="hover:text-blue-900 transition-colors">Alur Kerja</a>
                     <a href="#kontak" class="hover:text-blue-900 transition-colors">Kontak Kami</a>
                 </nav>
             @else
@@ -68,8 +71,9 @@
         class="fixed inset-y-0 left-0 z-[70] flex w-[280px] -translate-x-full flex-col overflow-y-auto bg-white shadow-2xl transition-transform duration-200 ease-out md:hidden"
     >
         <div class="px-4 py-4 border-b border-slate-200 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-0">
-                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum" class="w-10 h-10 rounded-md object-cover">
+            <div class="flex items-center gap-2 min-w-0">
+                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum" class="h-9 w-auto rounded-md object-contain">
+                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-9 w-auto rounded-md object-contain">
                 <div class="min-w-0">
                     <div class="font-extrabold tracking-tight text-lg text-[#29346b] truncate">PASIH</div>
                     <div class="text-[11px] leading-snug text-slate-500">Pendampingan Analisis &amp; Evaluasi Peraturan Daerah Kementerian Hukum Provinsi Riau</div>
