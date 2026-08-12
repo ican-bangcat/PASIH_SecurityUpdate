@@ -19,26 +19,42 @@
         $isPublicAnalysisPage = request()->routeIs('public.analysis.*');
     @endphp
 
-    <header class="topbar">
-        <div class="topbar-inner">
-            <div class="brand">
-                <img class="brand-logo" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
-                <div>
-                    <div class="brand-title">PASIH</div>
-                    <p class="brand-subtitle">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah Kementerian Hukum Riau</p>
+    <header class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img class="w-12 h-12 object-contain rounded-md" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold text-blue-900 leading-tight">PASIH</span>
+                    <span class="text-[10px] font-semibold text-slate-500 max-w-[200px] leading-snug">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
                 </div>
             </div>
 
-            <div class="topbar-actions">
-                <a class="login-btn" href="{{ route('login') }}">Masuk</a>
+            @if(request()->routeIs('home'))
+                <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                    <a href="#beranda" class="text-blue-900 transition-colors">Beranda</a>
+                    <a href="#tentang" class="hover:text-blue-900 transition-colors">Tentang Sistem</a>
+                    <a href="#alur" class="hover:text-blue-900 transition-colors">Alur Kerja</a>
+                    <a href="#kontak" class="hover:text-blue-900 transition-colors">Kontak Kami</a>
+                </nav>
+            @else
+                <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                    <a href="{{ route('home') }}" class="hover:text-blue-900 transition-colors">Beranda</a>
+                    <a href="{{ route('public.analysis.index') }}" class="{{ $isPublicAnalysisPage ? 'text-blue-900' : 'hover:text-blue-900' }} transition-colors">Hasil Analisis</a>
+                </nav>
+            @endif
+
+            <div class="flex items-center gap-4">
+                <a href="{{ route('login') }}" class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-sm transition-colors shadow-sm">
+                    Masuk
+                </a>
                 <button
                     type="button"
                     data-sidebar-toggle
                     aria-label="Buka menu"
-                    class="menu-btn"
+                    class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-blue-900 hover:bg-slate-100"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
             </div>
