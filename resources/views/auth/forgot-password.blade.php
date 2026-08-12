@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reset Password - SIPASIH</title>
+  <link rel="icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
+  <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
   @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
 <body class="min-h-screen flex items-center justify-center p-4" style="background-color:#D9D9DE;">
