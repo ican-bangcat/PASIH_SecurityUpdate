@@ -36,7 +36,8 @@
             @if(request()->routeIs('home'))
                 <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                     <a href="#beranda" class="text-blue-900 transition-colors">Beranda</a>
-                    <a href="#tentang" class="hover:text-blue-900 transition-colors">Tentang Sistem</a>
+                    <a href="#tentang-kami" class="hover:text-blue-900 transition-colors">Tentang Kami</a>
+                    <a href="#berita" class="hover:text-blue-900 transition-colors">Berita Terkini</a>
                     <a href="#kontak" class="hover:text-blue-900 transition-colors">Kontak Kami</a>
                 </nav>
             @else
