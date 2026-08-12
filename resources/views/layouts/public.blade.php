@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,9 +35,9 @@
 
             @if(request()->routeIs('home'))
                 <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                    <a href="#beranda" class="text-blue-900 transition-colors">Beranda</a>
-                    <a href="#tentang-kami" class="hover:text-blue-900 transition-colors">Tentang Kami</a>
+                    <a href="#beranda" class="hover:text-blue-900 transition-colors">Beranda</a>
                     <a href="#berita" class="hover:text-blue-900 transition-colors">Berita Terkini</a>
+                    <a href="#tentang-kami" class="hover:text-blue-900 transition-colors">Tentang Kami</a>
                     <a href="#kontak" class="hover:text-blue-900 transition-colors">Kontak Kami</a>
                 </nav>
             @else
@@ -96,11 +96,11 @@
             <a href="{{ route('home') }}#beranda" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Beranda
             </a>
-            <a href="{{ route('home') }}#tentang-kami" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-                Tentang Kami
-            </a>
             <a href="{{ route('home') }}#berita" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Berita Terkini
+            </a>
+            <a href="{{ route('home') }}#tentang-kami" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                Tentang Kami
             </a>
             <a href="{{ route('home') }}#kontak" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Kontak Kami
@@ -132,5 +132,38 @@
             </div>
         </footer>
     @endif
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section[id]');
+            // Hanya untuk anchor links di desktop nav (seperti #beranda, #berita, dll)
+            const desktopNavLinks = document.querySelectorAll('nav.hidden.md\\:flex a[href^="#"]');
+            
+            if (sections.length > 0 && desktopNavLinks.length > 0) {
+                const onScroll = () => {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        // Trigger perubahan saat section masuk seperempat ke viewport
+                        if (window.scrollY >= (sectionTop - 250)) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+
+                    desktopNavLinks.forEach(link => {
+                        link.classList.remove('text-blue-900');
+                        link.classList.add('hover:text-blue-900');
+                        if (current && link.getAttribute('href') === '#' + current) {
+                            link.classList.add('text-blue-900');
+                            link.classList.remove('hover:text-blue-900');
+                        }
+                    });
+                };
+                
+                window.addEventListener('scroll', onScroll);
+                onScroll(); // eksekusi sekali saat load
+            }
+        });
+    </script>
 </body>
 </html>

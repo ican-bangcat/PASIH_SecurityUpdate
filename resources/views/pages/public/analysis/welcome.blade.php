@@ -97,9 +97,7 @@
                 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
                     <div class="h-52 overflow-hidden relative bg-slate-200">
                         <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Berita 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 px-3 py-1 bg-yellow-500 text-white text-xs font-bold rounded-full shadow-md">
-                            Fasilitasi Perda
-                        </span>
+
                     </div>
                     <div class="p-6 flex flex-col flex-1">
                         <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
@@ -125,9 +123,7 @@
                 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
                     <div class="h-52 overflow-hidden relative bg-slate-200">
                         <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Berita 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 px-3 py-1 bg-blue-900 text-white text-xs font-bold rounded-full shadow-md">
-                            Analisis &amp; Evaluasi
-                        </span>
+
                     </div>
                     <div class="p-6 flex flex-col flex-1">
                         <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
@@ -153,9 +149,7 @@
                 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
                     <div class="h-52 overflow-hidden relative bg-slate-200">
                         <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Berita 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 px-3 py-1 bg-amber-600 text-white text-xs font-bold rounded-full shadow-md">
-                            Sosialisasi Hukum
-                        </span>
+
                     </div>
                     <div class="p-6 flex flex-col flex-1">
                         <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
