@@ -59,15 +59,9 @@
                         </div>
                     </div>
 
-                    <!-- 13 Small Dummy Logos Under Hero Image (Centered) -->
-                    <div class="w-full max-w-md mx-auto pt-1 flex flex-col items-center">
-                        <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-xs sm:max-w-sm">
-                            @for($i = 1; $i <= 13; $i++)
-                                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center p-1 sm:p-1.5 hover:border-yellow-400 hover:scale-105 transition-all cursor-default" title="Logo {{ $i }}">
-                                    <img src="{{ asset('images/LogoInstansi.png') }}" alt="Logo {{ $i }}" class="w-full h-full object-contain">
-                                </div>
-                            @endfor
-                        </div>
+                    <!-- Logo Pemda Under Hero Image -->
+                    <div class="w-full max-w-md mx-auto pt-4 flex justify-center">
+                        <img src="{{ asset('images/LOGO PEMDA.png') }}" alt="Logo Pemerintah Daerah" class="w-full h-auto object-contain hover:scale-105 transition-transform duration-300">
                     </div>
                 </div>
             </div>
