@@ -7,87 +7,138 @@
   @vite(['resources/css/app.css','resources/js/app.js'])
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4" style="background-color:#B9B9B9;">
-  <div class="w-full max-w-md rounded-2xl bg-[#F7F7F7] ring-1 ring-slate-300 shadow-md px-6 py-7">
-        <div class="flex items-center justify-center gap-4 mb-5">
-        <div class="h-[82px] flex items-center justify-center">
-            <img src="{{ asset('images/loginlogo2.png') }}"
-                alt="Logo PASIH"
-                class="h-[82px] object-contain">
+<body class="min-h-screen bg-white font-sans text-slate-900">
+  
+  <div class="flex w-full min-h-screen">
+    
+    <!-- Left Side: Dark Blue Panel -->
+    <div class="hidden md:flex md:w-[60%] bg-blue-900 text-white p-12 lg:p-20 flex-col justify-between relative overflow-hidden">
+        
+        <!-- Decorative Concentric Lines -->
+        <div class="absolute inset-0 pointer-events-none opacity-10">
+            <!-- Simple SVG concentric circles matching the vibe -->
+            <svg viewBox="0 0 800 800" class="absolute top-[-10%] right-[-30%] w-[120%] h-[120%] text-white" stroke="currentColor" fill="none" stroke-width="1.5">
+                <circle cx="400" cy="400" r="150" />
+                <circle cx="400" cy="400" r="250" />
+                <circle cx="400" cy="400" r="350" />
+                <circle cx="400" cy="400" r="450" />
+                <circle cx="400" cy="400" r="550" />
+            </svg>
+        </div>
+
+        <div class="relative z-10">
+            <!-- Icon/Logo -->
+            <div class="mb-12">
+                <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl inline-block border border-white/20 shadow-sm">
+                    <img src="{{ asset('images/loginlogo1.png') }}" alt="Logo PASIH" class="h-14 object-contain">
+                </div>
+            </div>
+
+            <!-- Text Content -->
+            <h1 class="text-5xl lg:text-[4rem] font-bold mb-4 leading-tight tracking-tight">
+                Hello<br>PASIH! 👋
+            </h1>
+            <p class="text-blue-100/90 text-lg max-w-md mt-6 leading-relaxed font-medium">
+                Sistem Pendampingan Analisis dan Evaluasi Hukum Peraturan Daerah. Selesaikan proses fasilitasi secara cepat dan transparan!
+            </p>
+        </div>
+
+        <!-- Footer Text -->
+        <div class="relative z-10 text-sm text-blue-200/60 font-medium">
+            &copy; {{ date('Y') }} PASIH Kemenkumham Riau. All rights reserved.
         </div>
     </div>
 
-    <h1 class="text-center text-3xl font-extrabold tracking-tight text-[#19305D]">PASIH</h1>
-    <p class="text-center text-sm text-slate-700 mt-1">Pendampingan Analisis dan Evaluasi Hukum Peraturan Daerah</p>
-
-    @if($errors->any())
-      <div class="mt-4 rounded-lg bg-rose-50 text-rose-700 ring-1 ring-rose-200 px-3 py-2 text-sm">{{ $errors->first() }}</div>
-    @endif
-    <div id="recaptcha-inline-error" class="mt-4 rounded-lg bg-rose-50 text-rose-700 ring-1 ring-rose-200 px-3 py-2 text-sm hidden">
-      Silakan centang reCAPTCHA terlebih dahulu.
-    </div>
-
-    <form id="login-form" method="POST" action="{{ route('login.attempt') }}" class="mt-5 space-y-3">
-      @csrf
-
-      <label class="block text-sm font-medium text-slate-700">
-        Email <span class="text-red-500">*</span>
-        <input
-          type="email"
-          name="email"
-          value="{{ old('email') }}"
-          required
-          placeholder="Masukkan Alamat Email"
-          class="mt-1.5 w-full h-11 px-4 py-2 rounded border border-[#B9B9B9] bg-white text-sm placeholder:text-[14px]"
-        >
-      </label>
-
-      <label class="block text-sm font-medium text-slate-700">
-        Password <span class="text-red-500">*</span>
-        <div class="relative mt-1.5">
-          <input
-            id="password"
-            type="password"
-            name="password"
-            required
-            placeholder="Masukkan Password"
-            class="w-full h-11 px-4 pr-11 py-2 rounded border border-[#B9B9B9] bg-white text-sm placeholder:text-[14px]"
-          >
-          <button
-            type="button"
-            id="toggle-password"
-            aria-label="Tampilkan password"
-            aria-pressed="false"
-            class="absolute inset-y-0 right-0 px-3 text-slate-500 hover:text-slate-700 focus:outline-none"
-          >
-            <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.584 10.587A2 2 0 0012 14a2 2 0 001.413-3.416M9.88 5.09A9.76 9.76 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.97 9.97 0 01-4.132 5.411M6.228 6.231C4.383 7.477 3.06 9.518 2.457 12A9.97 9.97 0 006.59 17.411"/>
-            </svg>
-          </button>
+    <!-- Right Side: Form -->
+    <div class="w-full md:w-[40%] flex flex-col justify-center bg-white p-8 sm:p-12 lg:px-20 relative shadow-[-20px_0_40px_rgba(0,0,0,0.05)] z-10">
+        
+        <!-- Brand Name Top Left -->
+        <div class="absolute top-8 left-8 sm:top-12 sm:left-12 lg:left-24 lg:top-12">
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('images/loginlogo1.png') }}" alt="Logo PASIH" class="h-9 object-contain">
+                <span class="text-2xl font-extrabold text-slate-900 tracking-tight">PASIH</span>
+            </div>
         </div>
-      </label>
 
-      <div class="flex items-center justify-between text-xs pt-0.5">
-        <label class="flex items-center gap-1.5 text-slate-600">
-          <input type="checkbox" name="remember" value="1" class="rounded border-slate-300">
-          Ingat saya
-        </label>
-        <a href="{{ route('password.request') }}" class="text-slate-500 hover:underline">Lupa Password?</a>
-      </div>
+        <div class="max-w-sm w-full mx-auto mt-12 md:mt-0">
+            <h2 class="text-[28px] font-bold text-slate-900 mb-1">Selamat Datang Kembali!</h2>
+            <p class="text-[13px] text-slate-500 mb-10 font-medium leading-relaxed">
+                Silakan masuk menggunakan akun yang telah terdaftar pada sistem kami.
+            </p>
 
-      <div class="pt-2 recaptcha-wrap flex justify-center">
-        <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
-      </div>
+            <!-- Error Messages -->
+            @if($errors->any())
+              <div class="mb-6 rounded-lg bg-rose-50 text-rose-700 px-4 py-3 text-sm font-medium flex items-start gap-2 border border-rose-100">
+                <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <span>{{ $errors->first() }}</span>
+              </div>
+            @endif
+            <div id="recaptcha-inline-error" class="mb-6 rounded-lg bg-rose-50 text-rose-700 px-4 py-3 text-sm font-medium hidden flex items-start gap-2 border border-rose-100">
+              <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <span>Silakan centang reCAPTCHA terlebih dahulu.</span>
+            </div>
 
-      <button type="submit" class="mt-2 w-full h-11 rounded-lg text-white text-sm font-semibold" style="background-color:#19305D;">
-        Login
-      </button>
-    </form>
+            <!-- Form -->
+            <form id="login-form" method="POST" action="{{ route('login.attempt') }}" class="space-y-6">
+                @csrf
+
+                <!-- Email Input (Bottom border only) -->
+                <div class="relative">
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        required
+                        placeholder="Alamat Email"
+                        class="w-full h-10 bg-transparent border-0 border-b border-slate-300 px-0 py-2 text-slate-900 placeholder:text-slate-400 focus:ring-0 focus:border-slate-900 transition-colors text-[15px] font-medium focus:outline-none"
+                    >
+                </div>
+
+                <!-- Password Input (Bottom border only) -->
+                <div class="relative pt-2">
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        required
+                        placeholder="Kata Sandi"
+                        class="w-full h-10 bg-transparent border-0 border-b border-slate-300 px-0 pr-10 py-2 text-slate-900 placeholder:text-slate-400 focus:ring-0 focus:border-slate-900 transition-colors text-[15px] font-medium focus:outline-none"
+                    >
+                    <button
+                        type="button"
+                        id="toggle-password"
+                        aria-label="Tampilkan password"
+                        aria-pressed="false"
+                        class="absolute bottom-2 right-0 flex items-center text-slate-400 hover:text-slate-800 transition-colors focus:outline-none"
+                    >
+                        <svg id="eye-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg id="eye-closed" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.584 10.587A2 2 0 0012 14a2 2 0 001.413-3.416M9.88 5.09A9.76 9.76 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.97 9.97 0 01-4.132 5.411M6.228 6.231C4.383 7.477 3.06 9.518 2.457 12A9.97 9.97 0 006.59 17.411"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- reCAPTCHA -->
+                <div class="pt-2 flex justify-start recaptcha-wrap">
+                    <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="mt-8 w-full h-[46px] bg-[#1a1a1a] hover:bg-black text-white rounded-[6px] text-[15px] font-semibold transition-colors">
+                    Masuk Sekarang
+                </button>
+
+                <div class="text-center mt-6">
+                    <span class="text-[13px] text-slate-500 font-medium">Lupa kata sandi? </span>
+                    <a href="{{ route('password.request') }}" class="text-[13px] font-bold text-slate-900 hover:underline">Klik di sini</a>
+                </div>
+            </form>
+        </div>
+    </div>
   </div>
   <script>
     const passwordInput = document.getElementById('password');
