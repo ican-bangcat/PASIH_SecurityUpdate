@@ -24,12 +24,12 @@
 
     <header class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <img class="h-11 w-auto object-contain rounded-md" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
-                <img class="h-11 w-auto object-contain rounded-md" src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA">
-                <div class="flex flex-col">
-                    <span class="text-xl font-extrabold text-blue-900 leading-tight">PASIH</span>
-                    <span class="text-[10px] font-semibold text-slate-500 max-w-[200px] leading-snug">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
+            <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                <img class="h-8 sm:h-11 w-auto object-contain rounded-md shrink-0" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
+                <img class="h-8 sm:h-11 w-auto object-contain rounded-md shrink-0" src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA">
+                <div class="flex flex-col min-w-0">
+                    <span class="text-base sm:text-xl font-extrabold text-blue-900 leading-tight">PASIH</span>
+                    <span class="text-[8px] sm:text-[10px] font-semibold text-slate-500 max-w-[110px] sm:max-w-[200px] leading-snug truncate">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
                 </div>
             </div>
 
@@ -73,18 +73,18 @@
     >
         <div class="px-4 py-4 border-b border-slate-200 flex items-center justify-between gap-3">
             <div class="flex items-center gap-2 min-w-0">
-                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum" class="h-9 w-auto rounded-md object-contain">
-                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-9 w-auto rounded-md object-contain">
+                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum" class="h-8 w-auto rounded-md object-contain">
+                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-8 w-auto rounded-md object-contain">
                 <div class="min-w-0">
-                    <div class="font-extrabold tracking-tight text-lg text-[#29346b] truncate">PASIH</div>
-                    <div class="text-[11px] leading-snug text-slate-500">Pendampingan Analisis &amp; Evaluasi Peraturan Daerah Kementerian Hukum Provinsi Riau</div>
+                    <div class="font-extrabold tracking-tight text-base text-[#29346b] truncate">PASIH</div>
+                    <div class="text-[10px] leading-snug text-slate-500 truncate">Pendampingan Analisis &amp; Evaluasi</div>
                 </div>
             </div>
             <button
                 type="button"
                 data-sidebar-close
                 aria-label="Tutup menu"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 text-slate-700"
+                class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-300 text-slate-700"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -92,19 +92,20 @@
             </button>
         </div>
 
-        <nav class="px-4 py-4 space-y-2">
-            <a
-                href="{{ route('home') }}"
-                data-sidebar-link
-                class="block rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('home') ? 'bg-[#eef2ff] text-[#1f275e]' : 'text-slate-700 hover:bg-slate-100' }}"
-            >
+        <nav class="px-4 py-4 space-y-1.5">
+            <a href="{{ route('home') }}#beranda" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Beranda
             </a>
-            <a
-                href="{{ route('public.analysis.index') }}"
-                data-sidebar-link
-                class="block rounded-xl px-4 py-3 text-sm font-semibold {{ $isPublicAnalysisPage ? 'bg-[#eef2ff] text-[#1f275e]' : 'text-slate-700 hover:bg-slate-100' }}"
-            >
+            <a href="{{ route('home') }}#tentang-kami" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                Tentang Kami
+            </a>
+            <a href="{{ route('home') }}#berita" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                Berita Terkini
+            </a>
+            <a href="{{ route('home') }}#kontak" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                Kontak Kami
+            </a>
+            <a href="{{ route('public.analysis.index') }}" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold {{ $isPublicAnalysisPage ? 'bg-[#eef2ff] text-[#1f275e]' : 'text-slate-700 hover:bg-slate-100' }}">
                 Hasil Analisis
             </a>
         </nav>

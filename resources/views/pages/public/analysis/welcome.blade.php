@@ -5,39 +5,39 @@
 
 @section('content')
     <!-- Hero Section (Full Viewport First Screen) -->
-    <section id="beranda" class="relative bg-white pt-10 pb-12 lg:pt-12 lg:pb-14 lg:min-h-[calc(100vh-80px)] flex items-center overflow-hidden border-b border-slate-200">
+    <section id="beranda" class="relative bg-white pt-6 pb-10 sm:pt-10 sm:pb-12 lg:pt-12 lg:pb-14 lg:min-h-[calc(100vh-80px)] flex items-center overflow-hidden border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 items-center">
                 <!-- Text Content -->
-                <div class="space-y-5">
+                <div class="space-y-4 sm:space-y-5 text-center lg:text-left">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100">
                         <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-                        <span class="text-xs font-bold text-blue-900 tracking-wide uppercase">Inovasi Harmonisasi Hukum</span>
+                        <span class="text-[11px] sm:text-xs font-bold text-blue-900 tracking-wide uppercase">Inovasi Harmonisasi Hukum</span>
                     </div>
 
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-blue-900 tracking-tight leading-[1.1]">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-900 tracking-tight leading-[1.15] sm:leading-[1.1]">
                         Hasil Analisis &amp; Evaluasi <span class="text-yellow-500">Hukum</span> Peraturan Daerah
                     </h1>
 
-                    <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-medium max-w-lg">
+                    <p class="text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed font-medium max-w-lg mx-auto lg:mx-0">
                         Menyediakan hasil analisis dan evaluasi hukum peraturan daerah oleh Kementerian Hukum Riau yang dapat diakses serta dimanfaatkan oleh masyarakat, termasuk untuk keperluan akademik dan penelitian
                     </p>
 
-                    <div class="pt-2 flex flex-wrap items-center gap-4">
-                        <a href="{{ route('public.analysis.index') }}" class="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-base shadow-lg shadow-yellow-500/30 transition-all">
+                    <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4">
+                        <a href="{{ route('public.analysis.index') }}" class="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-yellow-500/30 transition-all text-center">
                             Lihat Hasil Analisis
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </a>
-                        <a href="https://riau.kemenkum.go.id/" target="_blank" class="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white border-2 border-slate-200 text-blue-900 font-bold text-base hover:border-blue-900 transition-all">
+                        <a href="https://riau.kemenkum.go.id/" target="_blank" class="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-white border-2 border-slate-200 text-blue-900 font-bold text-sm sm:text-base hover:border-blue-900 transition-all text-center">
                             Website Kemenkum Riau
                         </a>
                     </div>
                 </div>
 
                 <!-- Image / Graphics Content -->
-                <div class="flex flex-col items-center lg:items-start space-y-4">
+                <div class="flex flex-col items-center lg:items-start space-y-4 w-full">
                     <!-- Main hero image (Dynamic Slider) -->
                     <div class="w-full max-w-md mx-auto aspect-[16/9] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 shadow-xl border border-slate-200/80 relative group">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-blue-900/30 mix-blend-multiply z-10 pointer-events-none"></div>
@@ -51,19 +51,19 @@
                         </div>
 
                         <!-- Dots Indicator -->
-                        <div class="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5">
-                            <button type="button" class="hero-dot w-5 h-2.5 rounded-full bg-white opacity-100 transition-all shadow-xs" onclick="setSlide(0)" aria-label="Slide 1"></button>
-                            <button type="button" class="hero-dot w-2.5 h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(1)" aria-label="Slide 2"></button>
-                            <button type="button" class="hero-dot w-2.5 h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(2)" aria-label="Slide 3"></button>
-                            <button type="button" class="hero-dot w-2.5 h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(3)" aria-label="Slide 4"></button>
+                        <div class="absolute bottom-2.5 sm:bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5">
+                            <button type="button" class="hero-dot w-4 sm:w-5 h-2 sm:h-2.5 rounded-full bg-white opacity-100 transition-all shadow-xs" onclick="setSlide(0)" aria-label="Slide 1"></button>
+                            <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(1)" aria-label="Slide 2"></button>
+                            <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(2)" aria-label="Slide 3"></button>
+                            <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(3)" aria-label="Slide 4"></button>
                         </div>
                     </div>
 
                     <!-- 13 Small Dummy Logos Under Hero Image (Centered) -->
                     <div class="w-full max-w-md mx-auto pt-1 flex flex-col items-center">
-                        <div class="flex flex-wrap items-center justify-center gap-2 max-w-sm">
+                        <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-w-xs sm:max-w-sm">
                             @for($i = 1; $i <= 13; $i++)
-                                <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center p-1.5 hover:border-yellow-400 hover:scale-105 transition-all cursor-default" title="Logo {{ $i }}">
+                                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center p-1 sm:p-1.5 hover:border-yellow-400 hover:scale-105 transition-all cursor-default" title="Logo {{ $i }}">
                                     <img src="{{ asset('images/LogoInstansi.png') }}" alt="Logo {{ $i }}" class="w-full h-full object-contain">
                                 </div>
                             @endfor
@@ -259,9 +259,9 @@
                 dots.forEach((dot, i) => {
                     if (i === index) {
                         dot.classList.remove('opacity-50');
-                        dot.classList.add('opacity-100', 'w-5');
+                        dot.classList.add('opacity-100', 'w-4', 'sm:w-5');
                     } else {
-                        dot.classList.remove('opacity-100', 'w-5');
+                        dot.classList.remove('opacity-100', 'w-4', 'sm:w-5');
                         dot.classList.add('opacity-50');
                     }
                 });
