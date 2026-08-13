@@ -44,10 +44,9 @@
                         
                         <!-- Slider Images -->
                         <div id="hero-slider" class="relative w-full h-full">
-                            <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Slide 1" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100" />
-                            <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Slide 2" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
-                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Slide 3" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
-                            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Slide 4" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
+                            <img src="{{ asset('images/0.jpg') }}" alt="Slide 1" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100" />
+                            <img src="{{ asset('images/1.jpg') }}" alt="Slide 2" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
+                            <img src="{{ asset('images/2.webp') }}" alt="Slide 3" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
                         </div>
 
                         <!-- Dots Indicator -->
@@ -55,7 +54,6 @@
                             <button type="button" class="hero-dot w-4 sm:w-5 h-2 sm:h-2.5 rounded-full bg-white opacity-100 transition-all shadow-xs" onclick="setSlide(0)" aria-label="Slide 1"></button>
                             <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(1)" aria-label="Slide 2"></button>
                             <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(2)" aria-label="Slide 3"></button>
-                            <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(3)" aria-label="Slide 4"></button>
                         </div>
                     </div>
 

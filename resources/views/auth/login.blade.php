@@ -3,23 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login PASIH</title>
+  <title>Login - PASIH</title>
   <link rel="icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
   <link rel="shortcut icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   @vite(['resources/css/app.css','resources/js/app.js'])
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
-<body class="min-h-screen bg-white font-sans text-slate-900">
+<body class="min-h-screen bg-[#f8fafc] font-['Poppins',sans-serif] text-slate-800 flex items-center justify-center p-4 sm:p-6 lg:p-8">
   
-  <div class="flex w-full min-h-screen">
+  <!-- Main Card Container -->
+  <div class="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[620px] border border-slate-200/80">
     
-    <!-- Left Side: Dark Blue Panel -->
-    <div class="hidden md:flex md:w-[60%] bg-blue-900 text-white p-12 lg:p-20 flex-col justify-between relative overflow-hidden">
+    <!-- Left Side: Rich Dark Blue Panel (Matching Landing Page Vibe) -->
+    <div class="md:w-1/2 bg-[#192750] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden">
         
-        <!-- Decorative Concentric Lines -->
-        <div class="absolute inset-0 pointer-events-none opacity-10">
-            <!-- Simple SVG concentric circles matching the vibe -->
-            <svg viewBox="0 0 800 800" class="absolute top-[-10%] right-[-30%] w-[120%] h-[120%] text-white" stroke="currentColor" fill="none" stroke-width="1.5">
+        <!-- Decorative Concentric Circles & Gradient Overlay -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-yellow-500/10 blur-3xl"></div>
+            <svg viewBox="0 0 800 800" class="absolute top-[-15%] right-[-25%] w-[130%] h-[130%] text-white/5" stroke="currentColor" fill="none" stroke-width="1.5">
                 <circle cx="400" cy="400" r="150" />
                 <circle cx="400" cy="400" r="250" />
                 <circle cx="400" cy="400" r="350" />
@@ -28,120 +35,179 @@
             </svg>
         </div>
 
+        <!-- Top Content -->
         <div class="relative z-10">
-            <!-- Icon/Logo -->
-            <div class="mb-12">
-                <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl inline-block border border-white/20 shadow-sm">
-                    <img src="{{ asset('images/loginlogo1.png') }}" alt="Logo PASIH" class="h-14 object-contain">
-                </div>
+            <!-- Dual Logo Badge -->
+            <div class="mb-10 inline-flex items-center gap-3 bg-white/10 backdrop-blur-md p-2.5 px-4 rounded-2xl border border-white/20 shadow-sm">
+                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kemenkum" class="h-10 w-auto object-contain">
+                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-10 w-auto object-contain">
             </div>
 
-            <!-- Text Content -->
-            <h1 class="text-5xl lg:text-[4rem] font-bold mb-4 leading-tight tracking-tight">
-                Hello<br>PASIH! 👋
+            <!-- Inovasi Tag -->
+            <div class="mb-6">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-xs font-bold tracking-wider uppercase">
+                    <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                    Inovasi Harmonisasi Hukum
+                </span>
+            </div>
+
+            <!-- Hero Welcome Heading -->
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-white">
+                Selamat Datang di <span class="text-yellow-400">PASIH!</span> 👋
             </h1>
-            <p class="text-blue-100/90 text-lg max-w-md mt-6 leading-relaxed font-medium">
-                Sistem Pendampingan Analisis dan Evaluasi Hukum Peraturan Daerah. Selesaikan proses fasilitasi secara cepat dan transparan!
+            <p class="text-blue-100/80 text-sm sm:text-base leading-relaxed font-medium mt-4 max-w-md">
+                Sistem Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah Kantor Wilayah Kementerian Hukum Riau.
             </p>
         </div>
 
-        <!-- Footer Text -->
-        <div class="relative z-10 text-sm text-blue-200/60 font-medium">
-            &copy; {{ date('Y') }} PASIH Kemenkumham Riau. All rights reserved.
+        <!-- Left Footer Copy -->
+        <div class="relative z-10 pt-8 mt-auto border-t border-white/10 text-xs text-blue-200/60 font-semibold flex items-center justify-between">
+            <span>&copy; {{ date('Y') }} PASIH - Kemenkum Riau</span>
+            <span class="hidden sm:inline">Caltex Riau</span>
         </div>
     </div>
 
-    <!-- Right Side: Form -->
-    <div class="w-full md:w-[40%] flex flex-col justify-center bg-white p-8 sm:p-12 lg:px-20 relative shadow-[-20px_0_40px_rgba(0,0,0,0.05)] z-10">
+    <!-- Right Side: Clean Login Form (Matching Landing Page Colors) -->
+    <div class="md:w-1/2 bg-white p-8 sm:p-12 lg:p-14 flex flex-col justify-between relative">
         
-        <!-- Brand Name Top Left -->
-        <div class="absolute top-8 left-8 sm:top-12 sm:left-12 lg:left-24 lg:top-12">
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('images/loginlogo1.png') }}" alt="Logo PASIH" class="h-9 object-contain">
-                <span class="text-2xl font-extrabold text-slate-900 tracking-tight">PASIH</span>
+        <!-- Header Top Navigation -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-2">
+                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-9 w-auto object-contain">
+                <div class="flex flex-col">
+                    <span class="text-lg font-extrabold text-blue-900 leading-tight">PASIH</span>
+                    <span class="text-[9px] font-semibold text-slate-400">Kemenkum Riau</span>
+                </div>
             </div>
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Beranda
+            </a>
         </div>
 
-        <div class="max-w-sm w-full mx-auto mt-12 md:mt-0">
-            <h2 class="text-[28px] font-bold text-slate-900 mb-1">Selamat Datang Kembali!</h2>
-            <p class="text-[13px] text-slate-500 mb-10 font-medium leading-relaxed">
+        <div class="w-full max-w-sm mx-auto my-auto">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-blue-900 tracking-tight mb-2">Selamat Datang Kembali!</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mb-8 font-medium leading-relaxed">
                 Silakan masuk menggunakan akun yang telah terdaftar pada sistem kami.
             </p>
 
             <!-- Error Messages -->
             @if($errors->any())
-              <div class="mb-6 rounded-lg bg-rose-50 text-rose-700 px-4 py-3 text-sm font-medium flex items-start gap-2 border border-rose-100">
-                <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <div class="mb-6 rounded-xl bg-rose-50 text-rose-700 px-4 py-3 text-xs sm:text-sm font-medium flex items-start gap-2.5 border border-rose-200/80 shadow-xs">
+                <svg class="w-5 h-5 shrink-0 mt-0.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 <span>{{ $errors->first() }}</span>
               </div>
             @endif
-            <div id="recaptcha-inline-error" class="mb-6 rounded-lg bg-rose-50 text-rose-700 px-4 py-3 text-sm font-medium hidden flex items-start gap-2 border border-rose-100">
-              <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+
+            <div id="recaptcha-inline-error" class="mb-6 rounded-xl bg-rose-50 text-rose-700 px-4 py-3 text-xs sm:text-sm font-medium hidden flex items-start gap-2.5 border border-rose-200/80 shadow-xs">
+              <svg class="w-5 h-5 shrink-0 mt-0.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
               <span>Silakan centang reCAPTCHA terlebih dahulu.</span>
             </div>
 
             <!-- Form -->
-            <form id="login-form" method="POST" action="{{ route('login.attempt') }}" class="space-y-6">
+            <form id="login-form" method="POST" action="{{ route('login.attempt') }}" class="space-y-5">
                 @csrf
 
-                <!-- Email Input (Bottom border only) -->
-                <div class="relative">
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        required
-                        placeholder="Alamat Email"
-                        class="w-full h-10 bg-transparent border-0 border-b border-slate-300 px-0 py-2 text-slate-900 placeholder:text-slate-400 focus:ring-0 focus:border-slate-900 transition-colors text-[15px] font-medium focus:outline-none"
-                    >
+                <!-- Email Input -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-blue-900 uppercase tracking-wider">Email <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            placeholder="Masukkan Alamat Email"
+                            class="w-full h-11 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all text-sm font-medium focus:outline-none"
+                        >
+                    </div>
                 </div>
 
-                <!-- Password Input (Bottom border only) -->
-                <div class="relative pt-2">
-                    <input
-                        id="password"
-                        type="password"
-                        name="password"
-                        required
-                        placeholder="Kata Sandi"
-                        class="w-full h-10 bg-transparent border-0 border-b border-slate-300 px-0 pr-10 py-2 text-slate-900 placeholder:text-slate-400 focus:ring-0 focus:border-slate-900 transition-colors text-[15px] font-medium focus:outline-none"
-                    >
-                    <button
-                        type="button"
-                        id="toggle-password"
-                        aria-label="Tampilkan password"
-                        aria-pressed="false"
-                        class="absolute bottom-2 right-0 flex items-center text-slate-400 hover:text-slate-800 transition-colors focus:outline-none"
-                    >
-                        <svg id="eye-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        <svg id="eye-closed" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.584 10.587A2 2 0 0012 14a2 2 0 001.413-3.416M9.88 5.09A9.76 9.76 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.97 9.97 0 01-4.132 5.411M6.228 6.231C4.383 7.477 3.06 9.518 2.457 12A9.97 9.97 0 006.59 17.411"/>
-                        </svg>
-                    </button>
+                <!-- Password Input -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-blue-900 uppercase tracking-wider">Password <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            required
+                            placeholder="Masukkan Password"
+                            class="w-full h-11 px-4 pr-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all text-sm font-medium focus:outline-none"
+                        >
+                        <button
+                            type="button"
+                            id="toggle-password"
+                            aria-label="Tampilkan password"
+                            aria-pressed="false"
+                            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-800 transition-colors focus:outline-none"
+                        >
+                            <svg id="eye-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg id="eye-closed" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.584 10.587A2 2 0 0012 14a2 2 0 001.413-3.416M9.88 5.09A9.76 9.76 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.97 9.97 0 01-4.132 5.411M6.228 6.231C4.383 7.477 3.06 9.518 2.457 12A9.97 9.97 0 006.59 17.411"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between pt-1 text-xs">
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-300 text-yellow-500 focus:ring-yellow-500 cursor-pointer" {{ old('remember') ? 'checked' : '' }}>
+                        <span class="font-semibold text-slate-600">Ingat saya</span>
+                    </label>
+                    <a href="{{ route('password.request') }}" class="font-bold text-yellow-600 hover:text-yellow-700 hover:underline transition-colors">
+                        Lupa Password?
+                    </a>
                 </div>
 
                 <!-- reCAPTCHA -->
                 <div class="pt-2 flex justify-start recaptcha-wrap">
-                    <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
+                    @if(app()->isLocal() || in_array(request()->getHost(), ['127.0.0.1', 'localhost']))
+                        <!-- Interactive Local Dev reCAPTCHA Box -->
+                        <div id="local-recaptcha-box" class="w-[304px] h-[78px] bg-[#f9f9f9] border border-slate-300 rounded-md p-3 px-3.5 flex items-center justify-between shadow-xs select-none cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleLocalRecaptcha()">
+                            <div class="flex items-center gap-3">
+                                <div id="local-recaptcha-checkbox" class="w-7 h-7 rounded border-2 border-slate-400 bg-white flex items-center justify-center transition-all">
+                                    <svg id="local-recaptcha-check-icon" class="w-5 h-5 text-emerald-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-slate-700">Saya bukan robot</span>
+                            </div>
+                            <div class="flex flex-col items-end text-[9px] text-slate-400 leading-tight">
+                                <svg class="w-7 h-7 text-blue-500 mb-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/>
+                                    <path d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+                                </svg>
+                                <span class="font-bold text-slate-500">reCAPTCHA</span>
+                                <span>Privasi - Persyaratan</span>
+                            </div>
+                            <input type="hidden" id="g-recaptcha-response-input" name="g-recaptcha-response" value="">
+                        </div>
+                    @else
+                        <!-- Production Google reCAPTCHA Widget -->
+                        <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
+                    @endif
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="mt-8 w-full h-[46px] bg-[#1a1a1a] hover:bg-black text-white rounded-[6px] text-[15px] font-semibold transition-colors">
-                    Masuk Sekarang
+                <button type="submit" class="w-full h-12 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-base shadow-lg shadow-yellow-500/30 transition-all flex items-center justify-center gap-2">
+                    <span>Masuk Sekarang</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
                 </button>
-
-                <div class="text-center mt-6">
-                    <span class="text-[13px] text-slate-500 font-medium">Lupa kata sandi? </span>
-                    <a href="{{ route('password.request') }}" class="text-[13px] font-bold text-slate-900 hover:underline">Klik di sini</a>
-                </div>
             </form>
         </div>
     </div>
   </div>
+
   <script>
     const passwordInput = document.getElementById('password');
     const togglePasswordButton = document.getElementById('toggle-password');
@@ -175,6 +241,28 @@
       togglePasswordButton.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
       togglePasswordButton.setAttribute('aria-pressed', String(isHidden));
     });
+
+    window.toggleLocalRecaptcha = function() {
+      const hiddenInput = document.getElementById('g-recaptcha-response-input');
+      const checkbox = document.getElementById('local-recaptcha-checkbox');
+      const checkIcon = document.getElementById('local-recaptcha-check-icon');
+      const errorMsg = document.getElementById('recaptcha-inline-error');
+
+      if (!hiddenInput || !checkbox || !checkIcon) return;
+
+      if (hiddenInput.value === '') {
+        hiddenInput.value = 'local-dev-bypass';
+        checkbox.classList.remove('border-slate-400', 'bg-white');
+        checkbox.classList.add('border-emerald-600', 'bg-emerald-50');
+        checkIcon.classList.remove('hidden');
+        if (errorMsg) errorMsg.classList.add('hidden');
+      } else {
+        hiddenInput.value = '';
+        checkbox.classList.remove('border-emerald-600', 'bg-emerald-50');
+        checkbox.classList.add('border-slate-400', 'bg-white');
+        checkIcon.classList.add('hidden');
+      }
+    };
 
     loginForm.addEventListener('submit', function (event) {
       const recaptchaValue = document.querySelector('[name="g-recaptcha-response"]')?.value;
@@ -223,7 +311,7 @@
       const scale = Math.min(1, availableWidth / recaptchaBaseWidth);
 
       recaptchaElement.style.transform = `scale(${scale})`;
-      recaptchaElement.style.transformOrigin = 'center top';
+      recaptchaElement.style.transformOrigin = 'left top';
       recaptchaWrap.style.height = `${recaptchaBaseHeight * scale}px`;
     };
 

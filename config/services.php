@@ -36,8 +36,8 @@ return [
     ],
 
     'recaptcha' => [
-        'site_key' => env('RECAPTCHA_SITE_KEY'),
-        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+        'site_key' => env('RECAPTCHA_SITE_KEY', '6LfH1tgsAAAAAGuzPGIL_JukCbYlk-M0ByidjBdz'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY', '6LfH1tgsAAAAAIjnXe9vHPNLuwvBVxNrE2_Huhdj'),
         'verify_url' => 'https://www.google.com/recaptcha/api/siteverify',
     ],
 
