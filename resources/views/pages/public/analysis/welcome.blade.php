@@ -10,11 +10,6 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 items-center">
                 <!-- Text Content -->
                 <div class="space-y-4 sm:space-y-5 text-center lg:text-left">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100">
-                        <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-                        <span class="text-[11px] sm:text-xs font-bold text-blue-900 tracking-wide uppercase">Inovasi Harmonisasi Hukum</span>
-                    </div>
-
                     <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-900 tracking-tight leading-[1.15] sm:leading-[1.1]">
                         Hasil Analisis &amp; Evaluasi <span class="text-yellow-500">Hukum</span> Peraturan Daerah
                     </h1>

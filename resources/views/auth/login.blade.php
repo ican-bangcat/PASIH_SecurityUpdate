@@ -169,31 +169,7 @@
 
                 <!-- reCAPTCHA -->
                 <div class="pt-2 flex justify-start recaptcha-wrap">
-                    @if(app()->isLocal() || in_array(request()->getHost(), ['127.0.0.1', 'localhost']))
-                        <!-- Interactive Local Dev reCAPTCHA Box -->
-                        <div id="local-recaptcha-box" class="w-[304px] h-[78px] bg-[#f9f9f9] border border-slate-300 rounded-md p-3 px-3.5 flex items-center justify-between shadow-xs select-none cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleLocalRecaptcha()">
-                            <div class="flex items-center gap-3">
-                                <div id="local-recaptcha-checkbox" class="w-7 h-7 rounded border-2 border-slate-400 bg-white flex items-center justify-center transition-all">
-                                    <svg id="local-recaptcha-check-icon" class="w-5 h-5 text-emerald-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-semibold text-slate-700">Saya bukan robot</span>
-                            </div>
-                            <div class="flex flex-col items-end text-[9px] text-slate-400 leading-tight">
-                                <svg class="w-7 h-7 text-blue-500 mb-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/>
-                                    <path d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
-                                </svg>
-                                <span class="font-bold text-slate-500">reCAPTCHA</span>
-                                <span>Privasi - Persyaratan</span>
-                            </div>
-                            <input type="hidden" id="g-recaptcha-response-input" name="g-recaptcha-response" value="">
-                        </div>
-                    @else
-                        <!-- Production Google reCAPTCHA Widget -->
-                        <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
-                    @endif
+                    <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
                 </div>
 
                 <!-- Submit Button -->
@@ -241,28 +217,6 @@
       togglePasswordButton.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
       togglePasswordButton.setAttribute('aria-pressed', String(isHidden));
     });
-
-    window.toggleLocalRecaptcha = function() {
-      const hiddenInput = document.getElementById('g-recaptcha-response-input');
-      const checkbox = document.getElementById('local-recaptcha-checkbox');
-      const checkIcon = document.getElementById('local-recaptcha-check-icon');
-      const errorMsg = document.getElementById('recaptcha-inline-error');
-
-      if (!hiddenInput || !checkbox || !checkIcon) return;
-
-      if (hiddenInput.value === '') {
-        hiddenInput.value = 'local-dev-bypass';
-        checkbox.classList.remove('border-slate-400', 'bg-white');
-        checkbox.classList.add('border-emerald-600', 'bg-emerald-50');
-        checkIcon.classList.remove('hidden');
-        if (errorMsg) errorMsg.classList.add('hidden');
-      } else {
-        hiddenInput.value = '';
-        checkbox.classList.remove('border-emerald-600', 'bg-emerald-50');
-        checkbox.classList.add('border-slate-400', 'bg-white');
-        checkIcon.classList.add('hidden');
-      }
-    };
 
     loginForm.addEventListener('submit', function (event) {
       const recaptchaValue = document.querySelector('[name="g-recaptcha-response"]')?.value;

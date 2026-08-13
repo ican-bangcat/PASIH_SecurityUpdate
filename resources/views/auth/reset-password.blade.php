@@ -89,7 +89,28 @@
             </svg>
           </button>
         </div>
-        <p class="text-[11px] font-medium text-slate-400">Minimal 15 karakter.</p>
+        <div class="mt-2 text-[11px] grid grid-cols-2 gap-2 text-rose-500" id="passwordRules">
+          <div class="flex items-center gap-1.5 transition-colors" id="rule-lower">
+            <svg class="w-3.5 h-3.5 rule-icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+            <span>Minimal satu huruf kecil</span>
+          </div>
+          <div class="flex items-center gap-1.5 transition-colors" id="rule-upper">
+            <svg class="w-3.5 h-3.5 rule-icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+            <span>Minimal satu huruf besar</span>
+          </div>
+          <div class="flex items-center gap-1.5 transition-colors" id="rule-number">
+            <svg class="w-3.5 h-3.5 rule-icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+            <span>Minimal satu angka</span>
+          </div>
+          <div class="flex items-center gap-1.5 transition-colors" id="rule-special">
+            <svg class="w-3.5 h-3.5 rule-icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+            <span>Minimal satu karakter spesial</span>
+          </div>
+          <div class="flex items-center gap-1.5 transition-colors" id="rule-length">
+            <svg class="w-3.5 h-3.5 rule-icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+            <span>Minimal 15 karakter</span>
+          </div>
+        </div>
       </div>
 
       <div class="space-y-1.5">
@@ -124,7 +145,7 @@
         </div>
       </div>
 
-      <button type="submit" class="w-full h-12 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-base shadow-lg shadow-yellow-500/30 transition-all flex items-center justify-center gap-2">
+      <button type="submit" id="submitBtn" disabled class="w-full h-12 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-base shadow-lg shadow-yellow-500/30 transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
         <span>Simpan Password Baru</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -150,6 +171,59 @@
         button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
         button.setAttribute('aria-pressed', String(isHidden));
       });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordInput = document.getElementById('new-password');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const rules = {
+        lower: { regex: /[a-z]/, element: document.getElementById('rule-lower') },
+        upper: { regex: /[A-Z]/, element: document.getElementById('rule-upper') },
+        number: { regex: /[0-9]/, element: document.getElementById('rule-number') },
+        special: { regex: /[^A-Za-z0-9]/, element: document.getElementById('rule-special') },
+        length: { regex: /.{15,}/, element: document.getElementById('rule-length') }
+      };
+
+      const dotIcon = `<circle cx="10" cy="10" r="4"/>`;
+      const checkIcon = `<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />`;
+
+      function updateValidation() {
+        if(!passwordInput) return;
+        const password = passwordInput.value;
+        let allValid = true;
+
+        for (const key in rules) {
+          const rule = rules[key];
+          const isValid = rule.regex.test(password);
+          
+          if (!isValid) allValid = false;
+
+          // Update classes
+          if (isValid) {
+            rule.element.classList.remove('text-rose-500');
+            rule.element.classList.add('text-emerald-600');
+            rule.element.querySelector('.rule-icon').innerHTML = checkIcon;
+          } else {
+            rule.element.classList.remove('text-emerald-600');
+            rule.element.classList.add('text-rose-500');
+            rule.element.querySelector('.rule-icon').innerHTML = dotIcon;
+          }
+        }
+
+        if (allValid) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+      }
+
+      if(passwordInput) {
+        passwordInput.addEventListener('input', updateValidation);
+        updateValidation();
+      }
     });
   </script>
 </body>
