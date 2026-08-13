@@ -63,7 +63,7 @@
         <!-- Left Footer Copy -->
         <div class="relative z-10 pt-8 mt-auto border-t border-white/10 text-xs text-blue-200/60 font-semibold flex items-center justify-between">
             <span>&copy; {{ date('Y') }} PASIH - Kemenkum Riau</span>
-            <span class="hidden sm:inline">Caltex Riau</span>
+            <span class="hidden sm:inline">Politeknik Caltex Riau</span>
         </div>
     </div>
 

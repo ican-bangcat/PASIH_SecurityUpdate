@@ -29,7 +29,7 @@
                 <img class="h-8 sm:h-11 w-auto object-contain rounded-md shrink-0" src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA">
                 <div class="flex flex-col min-w-0">
                     <span class="text-base sm:text-xl font-extrabold text-blue-900 leading-tight">PASIH</span>
-                    <span class="text-[8px] sm:text-[10px] font-semibold text-slate-500 max-w-[110px] sm:max-w-[200px] leading-snug truncate">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
+                    <span class="text-[8px] sm:text-[10px] font-semibold text-slate-500 max-w-[140px] sm:max-w-[250px] leading-snug whitespace-normal">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
                 </div>
             </div>
 
@@ -149,6 +149,13 @@
                             current = section.getAttribute('id');
                         }
                     });
+
+                    // Cek jika scroll sudah mencapai posisi paling bawah halaman
+                    if ((window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight - 10) {
+                        if (sections.length > 0) {
+                            current = sections[sections.length - 1].getAttribute('id');
+                        }
+                    }
 
                     desktopNavLinks.forEach(link => {
                         link.classList.remove('text-blue-900');

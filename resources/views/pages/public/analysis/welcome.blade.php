@@ -88,7 +88,7 @@
                 <!-- Berita 1 -->
                 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
                     <div class="h-52 overflow-hidden relative bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Berita 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ asset('images/0.jpg') }}" alt="Berita 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
                     </div>
                     <div class="p-6 flex flex-col flex-1">
@@ -114,7 +114,7 @@
                 <!-- Berita 2 -->
                 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
                     <div class="h-52 overflow-hidden relative bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Berita 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ asset('images/1.jpg') }}" alt="Berita 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
                     </div>
                     <div class="p-6 flex flex-col flex-1">
@@ -140,7 +140,7 @@
                 <!-- Berita 3 -->
                 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
                     <div class="h-52 overflow-hidden relative bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Berita 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ asset('images/2.webp') }}" alt="Berita 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
                     </div>
                     <div class="p-6 flex flex-col flex-1">
@@ -172,7 +172,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="order-2 lg:order-1 relative">
                     <div class="relative rounded-3xl overflow-hidden aspect-[4/3]">
-                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Tim PASIH" class="w-full h-full object-cover">
+                        <img src="{{ asset('images/2.webp') }}" alt="Tim PASIH" class="w-full h-full object-cover">
                     </div>
                     <!-- Small overlaid box -->
                     <div class="absolute -bottom-8 -right-8 bg-blue-900 p-8 rounded-2xl max-w-xs shadow-2xl hidden md:block">
@@ -316,11 +316,11 @@
                             </svg>
                         </a>
                         <!-- X/Twitter -->
-                        <a href="#" class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#192750] transition-colors text-white">
+                        <!-- <a href="#" class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#192750] transition-colors text-white">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                             </svg>
-                        </a>
+                        </a> -->
                         <!-- Instagram -->
                         <a href="https://www.instagram.com/kemenkumriau?igsh=MTRqYnFkbnQ5OWRpMg==&igsi=MTRqYnFkbnQ5OWRpMg==" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#192750] transition-colors text-white" title="Instagram Kemenkum Riau">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -328,17 +328,17 @@
                             </svg>
                         </a>
                         <!-- YouTube -->
-                        <a href="#" class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#192750] transition-colors text-white">
+                        <!-- <a href="#" class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-[#192750] transition-colors text-white">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd" />
                             </svg>
-                        </a>
+                        </a> -->
                         <!-- RSS -->
-                        <a href="#" class="text-white hover:text-yellow-400 transition-colors ml-1">
+                        <!-- <a href="#" class="text-white hover:text-yellow-400 transition-colors ml-1">
                             <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M4 11a9 9 0 0 1 9 9h3c0-6.627-5.373-12-12-12v3zm0 4a5 5 0 0 1 5 5h3c0-4.418-3.582-8-8-8v3zm2.5 7a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
                             </svg>
-                        </a>
+                        </a> -->
                     </div>
                 </div>
 
