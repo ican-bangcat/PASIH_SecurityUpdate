@@ -24,10 +24,10 @@
 
     <header class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-                <img class="h-8 sm:h-11 w-auto object-contain rounded-md shrink-0" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
-                <img class="h-8 sm:h-11 w-auto object-contain rounded-md shrink-0" src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA">
-                <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <img class="h-7 sm:h-9 w-auto object-contain rounded-md shrink-0" src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum">
+                <img class="h-9 sm:h-12 w-auto object-contain shrink-0" src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA">
+                <div class="flex flex-col min-w-0 justify-center">
                     <span class="text-base sm:text-xl font-extrabold text-blue-900 leading-tight">PASIH</span>
                     <span class="text-[8px] sm:text-[10px] font-semibold text-slate-500 max-w-[140px] sm:max-w-[250px] leading-snug whitespace-normal">Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah</span>
                 </div>
@@ -72,9 +72,9 @@
         class="fixed inset-y-0 left-0 z-[70] flex w-[280px] -translate-x-full flex-col overflow-y-auto bg-white shadow-2xl transition-transform duration-200 ease-out md:hidden"
     >
         <div class="px-4 py-4 border-b border-slate-200 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2 min-w-0">
-                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum" class="h-8 w-auto rounded-md object-contain">
-                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-8 w-auto rounded-md object-contain">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kementerian Hukum" class="h-7 w-auto rounded-md object-contain shrink-0">
+                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-9 w-auto object-contain shrink-0">
                 <div class="min-w-0">
                     <div class="font-extrabold tracking-tight text-base text-[#29346b] truncate">PASIH</div>
                     <div class="text-[10px] leading-snug text-slate-500 truncate">Pendampingan Analisis &amp; Evaluasi</div>

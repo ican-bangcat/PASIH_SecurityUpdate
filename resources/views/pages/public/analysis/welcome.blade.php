@@ -39,16 +39,37 @@
                         
                         <!-- Slider Images -->
                         <div id="hero-slider" class="relative w-full h-full">
-                            <img src="{{ asset('images/0.jpg') }}" alt="Slide 1" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100" />
-                            <img src="{{ asset('images/1.jpg') }}" alt="Slide 2" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
-                            <img src="{{ asset('images/2.webp') }}" alt="Slide 3" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0" />
+                            @php
+                                $heroSlides = [
+                                    'images/2000.jpg.jpeg',
+                                    'images/2001.jpeg',
+                                    'images/2002.jpeg',
+                                    'images/2004.jpg.jpeg',
+                                    'images/2005.jpeg',
+                                    'images/2006.jpeg',
+                                    'images/2007.jpg.jpeg',
+                                    'images/2008.jpg.jpeg',
+                                    'images/2009.jpg.jpeg',
+                                    'images/2010.jpeg',
+                                ];
+                            @endphp
+                            @foreach ($heroSlides as $index => $slide)
+                                <img src="{{ asset($slide) }}" alt="Hero Slide {{ $index + 1 }}" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}" />
+                            @endforeach
                         </div>
 
                         <!-- Dots Indicator -->
-                        <div class="absolute bottom-2.5 sm:bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5">
-                            <button type="button" class="hero-dot w-4 sm:w-5 h-2 sm:h-2.5 rounded-full bg-white opacity-100 transition-all shadow-xs" onclick="setSlide(0)" aria-label="Slide 1"></button>
-                            <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(1)" aria-label="Slide 2"></button>
-                            <button type="button" class="hero-dot w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white opacity-50 transition-all shadow-xs" onclick="setSlide(2)" aria-label="Slide 3"></button>
+                        <div class="absolute bottom-2.5 sm:bottom-3.5 left-0 right-0 z-20 flex justify-center items-center pointer-events-auto px-2">
+                            <div class="bg-slate-900/40 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20 shadow-sm max-w-full overflow-x-auto">
+                                @foreach ($heroSlides as $index => $slide)
+                                    <button 
+                                        type="button" 
+                                        class="hero-dot {{ $index === 0 ? 'w-4 sm:w-5 bg-yellow-400 opacity-100' : 'w-1.5 sm:w-2 bg-white/70 opacity-60 hover:opacity-100' }} !min-h-0 !h-1.5 sm:!h-2 !p-0 !border-0 rounded-full transition-all duration-300 cursor-pointer shrink-0" 
+                                        onclick="setSlide({{ $index }})" 
+                                        aria-label="Slide {{ $index + 1 }}"
+                                    ></button>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -170,18 +191,13 @@
                         <img src="{{ asset('images/2.webp') }}" alt="Tim PASIH" class="w-full h-full object-cover">
                     </div>
                     <!-- Small overlaid box -->
-                    <div class="absolute -bottom-8 -right-8 bg-blue-900 p-8 rounded-2xl max-w-xs shadow-2xl hidden md:block">
-                        <h4 class="text-yellow-500 font-black text-xl mb-2">Misi Kami</h4>
-                        <p class="text-white text-sm leading-relaxed font-medium">Memastikan setiap produk hukum daerah sesuai dengan nilai konstitusi dan peraturan perundang-undangan.</p>
-                    </div>
                 </div>
                 
                 <div class="order-1 lg:order-2 space-y-6">
                     <span class="text-yellow-500 font-bold text-sm tracking-widest uppercase">Tentang Kami</span>
                     <h2 class="text-3xl md:text-4xl font-extrabold text-blue-900 leading-tight">Mewujudkan Produk Hukum Daerah Yang Berkualitas</h2>
                     <p class="text-slate-600 text-lg leading-relaxed">
-                        Kami berkomitmen untuk memberikan pendampingan yang transparan dan akuntabel dalam proses pembentukan peraturan daerah di setiap wilayah Provinsi Riau.
-                    </p>
+Kami berkomitmen memberikan pendampingan secara profesional dalam tahapan analisis dan evaluasi terhadap peraturan daerah provinsi, dan kabupaten/kota di Provinsi Riau:                    </p>
                     <ul class="space-y-4 pt-4">
                         <li class="flex items-start gap-4">
                             <div class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center shrink-0 mt-0.5">
@@ -189,7 +205,7 @@
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <span class="text-slate-700 font-medium">Tim Ahli &amp; Analis Hukum Profesional</span>
+                            <span class="text-slate-700 font-medium">Analis Hukum &amp; Pejabat Fungsional di bidang hukum yang responsif dan profesional</span>
                         </li>
                         <li class="flex items-start gap-4">
                             <div class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center shrink-0 mt-0.5">
@@ -239,11 +255,11 @@
                 });
                 dots.forEach((dot, i) => {
                     if (i === index) {
-                        dot.classList.remove('opacity-50');
-                        dot.classList.add('opacity-100', 'w-4', 'sm:w-5');
+                        dot.classList.remove('opacity-60', 'w-1.5', 'sm:w-2', 'bg-white/70');
+                        dot.classList.add('opacity-100', 'w-4', 'sm:w-5', 'bg-yellow-400');
                     } else {
-                        dot.classList.remove('opacity-100', 'w-4', 'sm:w-5');
-                        dot.classList.add('opacity-50');
+                        dot.classList.remove('opacity-100', 'w-4', 'sm:w-5', 'bg-yellow-400');
+                        dot.classList.add('opacity-60', 'w-1.5', 'sm:w-2', 'bg-white/70');
                     }
                 });
                 currentSlide = index;
@@ -278,8 +294,7 @@
                         </div>
                     </div>
                     <p class="text-blue-100/80 text-sm leading-relaxed mb-8">
-                        Sistem Informasi terpadu untuk Harmonisasi dan Fasilitasi Rancangan Peraturan Daerah dan Kepala Daerah secara komprehensif, cepat, dan tuntas.
-                    </p>
+Melalui Pasih Perda, Kantor Wilayah Kementerian Hukum Riau berupaya mendorong efektivitas pelaksanaan analisis dan evaluasi terhadap peraturan daerah dalam rangka meningkatkan tata kelola regulasi pada 13 pemerintah daerah melalui platform berbasis website. Pengembangan Pasih Perda selaras dengan tuntutan perkembangan teknologi informasi serta tuntutan pelayanan publik yang mendorong kinerja cepat, transparan, dan akuntabel.                    </p>
                     
                     <h4 class="font-bold text-white text-base mb-4">Punya Pertanyaan?</h4>
                     <ul class="space-y-4">

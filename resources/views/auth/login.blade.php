@@ -39,21 +39,13 @@
         <div class="relative z-10">
             <!-- Dual Logo Badge -->
             <div class="mb-10 inline-flex items-center gap-3 bg-white/10 backdrop-blur-md p-2.5 px-4 rounded-2xl border border-white/20 shadow-sm">
-                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kemenkum" class="h-10 w-auto object-contain">
-                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-10 w-auto object-contain">
-            </div>
-
-            <!-- Inovasi Tag -->
-            <div class="mb-6">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-xs font-bold tracking-wider uppercase">
-                    <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
-                    Inovasi Harmonisasi Hukum
-                </span>
+                <img src="{{ asset('images/loginlogo2.png') }}" alt="Logo Kemenkum" class="h-9 w-auto object-contain">
+                <img src="{{ asset('images/logo_pasih_perda.png') }}" alt="Logo PASIH PERDA" class="h-11 w-auto object-contain">
             </div>
 
             <!-- Hero Welcome Heading -->
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-white">
-                Selamat Datang di <span class="text-yellow-400">PASIH!</span> 👋
+                Selamat Datang di <span class="text-yellow-400">PASIH PERDA!</span> 👋
             </h1>
             <p class="text-blue-100/80 text-sm sm:text-base leading-relaxed font-medium mt-4 max-w-md">
                 Sistem Pendampingan Analisis &amp; Evaluasi Hukum Peraturan Daerah Kantor Wilayah Kementerian Hukum Riau.

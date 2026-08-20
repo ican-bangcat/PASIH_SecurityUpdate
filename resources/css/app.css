@@ -250,12 +250,18 @@ body:not(.public-page) main table td :is(a, button).h-8.w-8 :is(svg, img).h-4.w-
         line-height: 1.5rem !important;
     }
 
-    button,
-    [role='button'],
+    button:not(.hero-dot),
+    [role='button']:not(.hero-dot),
     input:not([type='checkbox']):not([type='radio']),
     select,
     textarea {
         min-height: 44px;
+    }
+
+    .hero-dot {
+        min-height: 0 !important;
+        height: 6px !important;
+        padding: 0 !important;
     }
 
     input,
