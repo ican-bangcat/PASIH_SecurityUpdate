@@ -28,11 +28,12 @@ class AuthController extends Controller
         $validated = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
-            'g-recaptcha-response' => ['required', 'string'],
+            // 'g-recaptcha-response' => ['required', 'string'],
         ], [
-            'g-recaptcha-response.required' => 'Silakan centang reCAPTCHA terlebih dahulu.',
+            // 'g-recaptcha-response.required' => 'Silakan centang reCAPTCHA terlebih dahulu.',
         ]);
 
+        /* reCAPTCHA Sementara Dinonaktifkan untuk Dev
         $recaptchaToken = $request->input('g-recaptcha-response');
 
         if ($recaptchaToken !== 'local-dev-bypass') {
@@ -49,6 +50,7 @@ class AuthController extends Controller
                 return back()->withErrors(['email' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.'])->onlyInput('email');
             }
         }
+        */
 
         $credentials = [
             'email' => $validated['email'],
@@ -73,7 +75,7 @@ class AuthController extends Controller
                     'method' => 'POST',
                 ]);
             } catch (\Throwable) {
-                
+
             }
         }
 
@@ -93,7 +95,7 @@ class AuthController extends Controller
                     'method' => 'POST',
                 ]);
             } catch (\Throwable) {
-                
+
             }
         }
 

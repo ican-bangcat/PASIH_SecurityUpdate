@@ -170,5 +170,4 @@ class Submission extends Model
         $this->unsetRelation('statuses');
         $this->load(['latestStatus', 'latestReviewStatus']);
     }
-
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Enums\UserRole;
+use App\Http\Controllers\Controller;
 use App\Models\Instansi;
 use App\Models\Role;
 use App\Models\User;

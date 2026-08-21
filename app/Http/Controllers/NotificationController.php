@@ -13,6 +13,7 @@ use App\Models\SubmissionStatusLog;
 use App\Models\User;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class NotificationController extends Controller
@@ -39,7 +40,7 @@ class NotificationController extends Controller
      *   detail:string,
      *   user_id:int|null,
      *   user:string,
-     *   time:\Illuminate\Support\Carbon|null,
+     *   time:Carbon|null,
      *   url:string|null
      * }>
      */

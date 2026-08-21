@@ -32,5 +32,7 @@ class DatabaseSeeder extends Seeder
             'id_role' => $adminRole->id_role,
             'id_instansi' => $instansiKanwil->id_instansi,
         ]);
+
+        $this->call(NewsSeeder::class);
     }
 }

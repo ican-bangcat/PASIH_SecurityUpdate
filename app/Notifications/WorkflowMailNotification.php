@@ -39,7 +39,7 @@ class WorkflowMailNotification extends Notification implements ShouldQueue
         $fromAddress = (string) (config('mail.from.address') ?? '');
         $fromName = trim((string) (config('mail.from.name') ?: 'PASIH'));
 
-        $message = (new MailMessage())
+        $message = (new MailMessage)
             ->subject($this->subject)
             ->greeting("Halo, {$recipientName}!")
             ->line($this->headline)

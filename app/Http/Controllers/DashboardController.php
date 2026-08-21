@@ -67,7 +67,7 @@ class DashboardController extends Controller
             ->whereStatusIn(['accepted', 'Revised', 'Rejected', 'Assigned', 'Completed'])
             ->count();
         $disposedSubmissions = (clone $periodSubmissionQuery)
-           ->whereStatusIn(['accepted', 'Assigned', 'Completed'])
+            ->whereStatusIn(['accepted', 'Assigned', 'Completed'])
             ->count();
 
         $stats = [

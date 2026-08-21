@@ -159,10 +159,11 @@
                     </a>
                 </div>
 
-                <!-- reCAPTCHA -->
+                {{-- reCAPTCHA Sementara Dinonaktifkan untuk Dev
                 <div class="pt-2 flex justify-start recaptcha-wrap">
                     <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
                 </div>
+                --}}
 
                 <!-- Submit Button -->
                 <button type="submit" class="w-full h-12 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-base shadow-lg shadow-yellow-500/30 transition-all flex items-center justify-center gap-2">
@@ -210,6 +211,7 @@
       togglePasswordButton.setAttribute('aria-pressed', String(isHidden));
     });
 
+    /* reCAPTCHA submit listener dimatikan sementara
     loginForm.addEventListener('submit', function (event) {
       const recaptchaValue = document.querySelector('[name="g-recaptcha-response"]')?.value;
 
@@ -218,6 +220,7 @@
         recaptchaInlineError.classList.remove('hidden');
       }
     });
+    */
 
     [emailInput, passwordField].forEach(function (field) {
       if (!field) {

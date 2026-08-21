@@ -90,8 +90,8 @@
                     <span class="text-yellow-500 font-bold text-sm tracking-widest uppercase block mb-2">Berita Terkini</span>
                     <h2 class="text-3xl md:text-4xl font-extrabold text-blue-900">Seputar Peraturan Daerah &amp; Harmonisasi</h2>
                 </div>
-                <div class="hidden sm:block">
-                    <a href="https://riau.kemenkum.go.id/berita" target="_blank" rel="noopener" class="inline-flex items-center text-sm font-bold text-blue-900 hover:text-yellow-600 transition-colors">
+                <div>
+                    <a href="{{ route('public.news.index') }}" class="inline-flex items-center text-sm font-bold text-blue-900 hover:text-yellow-600 transition-colors">
                         Lihat Semua Berita
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -101,83 +101,41 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Berita 1 -->
-                <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
-                    <div class="h-52 overflow-hidden relative bg-slate-200">
-                        <img src="{{ asset('images/0.jpg') }}" alt="Berita 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-
-                    </div>
-                    <div class="p-6 flex flex-col flex-1">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            <span>12 Agustus 2026</span>
+                @forelse($latestNews ?? [] as $news)
+                    <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
+                        <div class="h-52 overflow-hidden relative bg-slate-200">
+                            @if($news->image_url)
+                                <img src="{{ $news->image_url }}" alt="{{ $news->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                                </div>
+                            @endif
                         </div>
-                        <h3 class="text-lg font-bold text-blue-900 mb-3 group-hover:text-yellow-600 transition-colors line-clamp-2">
-                            Kanwil Kemenkum Riau Gelar Rapat Pengharmonisasian Raperda Kabupaten Bengkalis
-                        </h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
-                            Tim Perancang Peraturan Perundang-undangan melaksanakan analisis konsepsi dan sinkronisasi norma terhadap rancangan peraturan daerah secara komprehensif.
-                        </p>
-                        <a href="https://riau.kemenkum.go.id/" target="_blank" rel="noopener" class="text-yellow-600 font-bold text-sm inline-flex items-center hover:text-yellow-700">
-                            Baca Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Berita 2 -->
-                <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
-                    <div class="h-52 overflow-hidden relative bg-slate-200">
-                        <img src="{{ asset('images/1.jpg') }}" alt="Berita 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-
-                    </div>
-                    <div class="p-6 flex flex-col flex-1">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            <span>10 Agustus 2026</span>
+                        <div class="p-6 flex flex-col flex-1">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                <span>{{ optional($news->published_at)->translatedFormat('d F Y') ?: optional($news->created_at)->translatedFormat('d F Y') }}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-blue-900 mb-3 group-hover:text-yellow-600 transition-colors line-clamp-2">
+                                <a href="{{ route('public.news.show', $news->slug) }}">{{ $news->title }}</a>
+                            </h3>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
+                                {{ $news->excerpt }}
+                            </p>
+                            <a href="{{ route('public.news.show', $news->slug) }}" class="text-yellow-600 font-bold text-sm inline-flex items-center hover:text-yellow-700">
+                                Baca Selengkapnya
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
                         </div>
-                        <h3 class="text-lg font-bold text-blue-900 mb-3 group-hover:text-yellow-600 transition-colors line-clamp-2">
-                            Peningkatan Kualitas Produk Hukum Daerah Melalui Layanan Digital PASIH
-                        </h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
-                            Pemerintah Provinsi Riau berkomitmen mempercepat proses digitalisasi fasilitasi dan penelaahan hukum se-Kabupaten/Kota secara transparan dan akuntabel.
-                        </p>
-                        <a href="https://riau.kemenkum.go.id/" target="_blank" rel="noopener" class="text-yellow-600 font-bold text-sm inline-flex items-center hover:text-yellow-700">
-                            Baca Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
+                    </article>
+                @empty
+                    <div class="col-span-3 py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-100">
+                        <p class="font-semibold text-slate-600">Belum ada berita terkini yang dipublikasikan.</p>
                     </div>
-                </article>
-
-                <!-- Berita 3 -->
-                <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group">
-                    <div class="h-52 overflow-hidden relative bg-slate-200">
-                        <img src="{{ asset('images/2.webp') }}" alt="Berita 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-
-                    </div>
-                    <div class="p-6 flex flex-col flex-1">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            <span>08 Agustus 2026</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-blue-900 mb-3 group-hover:text-yellow-600 transition-colors line-clamp-2">
-                            Bimbingan Teknis Penyusunan Prolegda Bagi Pengelola JDIH se-Provinsi Riau
-                        </h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
-                            Mewujudkan kepastian hukum dan keterbukaan informasi publik dalam pembentukan peraturan legislatif daerah di seluruh tingkat Kabupaten dan Kota.
-                        </p>
-                        <a href="https://riau.kemenkum.go.id/" target="_blank" rel="noopener" class="text-yellow-600 font-bold text-sm inline-flex items-center hover:text-yellow-700">
-                            Baca Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </div>
-                </article>
+                @endforelse
             </div>
         </div>
     </section>

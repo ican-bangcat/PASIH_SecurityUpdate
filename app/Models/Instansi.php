@@ -10,6 +10,7 @@ class Instansi extends Model
     use HasFactory;
 
     protected $table = 'instansi';
+
     protected $primaryKey = 'id_instansi';
 
     protected $fillable = [

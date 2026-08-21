@@ -9,17 +9,17 @@ use App\Models\User;
 use App\Services\WorkflowNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SubmissionController extends Controller
 {
     public function __construct(
         private readonly WorkflowNotificationService $workflowNotificationService
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -433,43 +433,42 @@ class SubmissionController extends Controller
         string $type,
         ?string $instansiName = null,
         ?string $documentLabel = null
-    ): void
-{
-    $destinationPath = public_path('storage/permohonan');
+    ): void {
+        $destinationPath = public_path('storage/permohonan');
 
-    if (! is_dir($destinationPath) && ! mkdir($destinationPath, 0755, true) && ! is_dir($destinationPath)) {
-        throw ValidationException::withMessages([
-            'file' => 'Folder upload permohonan tidak dapat dibuat.',
+        if (! is_dir($destinationPath) && ! mkdir($destinationPath, 0755, true) && ! is_dir($destinationPath)) {
+            throw ValidationException::withMessages([
+                'file' => 'Folder upload permohonan tidak dapat dibuat.',
+            ]);
+        }
+
+        $displayName = $this->buildDisplayDocumentName(
+            $instansiName ?? 'Instansi',
+            $documentLabel ?? $this->mapDocumentTypeToLabel($type),
+            now()
+        );
+        $extension = $file->getClientOriginalExtension();
+        $storedName = $displayName.($extension ? '.'.$extension : '');
+        if (file_exists($destinationPath.DIRECTORY_SEPARATOR.$storedName)) {
+            $storedName = $displayName.'_'.Str::lower(Str::random(4)).($extension ? '.'.$extension : '');
+        }
+
+        $fileSize = $file->getSize();
+        $mimeType = $file->getClientMimeType();
+
+        // Baru pindahkan
+        $file->move($destinationPath, $storedName);
+
+        SubmissionDocument::query()->create([
+            'submission_id' => $submissionId,
+            'uploaded_by' => $userId,
+            'document_type' => $type,
+            'file_name' => $displayName,
+            'file_path' => 'permohonan/'.$storedName,
+            'mime_type' => $mimeType,
+            'file_size' => $fileSize,
         ]);
     }
-
-    $displayName = $this->buildDisplayDocumentName(
-        $instansiName ?? 'Instansi',
-        $documentLabel ?? $this->mapDocumentTypeToLabel($type),
-        now()
-    );
-    $extension = $file->getClientOriginalExtension();
-    $storedName = $displayName.($extension ? '.'.$extension : '');
-    if (file_exists($destinationPath.DIRECTORY_SEPARATOR.$storedName)) {
-        $storedName = $displayName.'_'.Str::lower(Str::random(4)).($extension ? '.'.$extension : '');
-    }
-
-    $fileSize = $file->getSize();
-    $mimeType = $file->getClientMimeType();
-
-    // Baru pindahkan
-    $file->move($destinationPath, $storedName);
-
-    SubmissionDocument::query()->create([
-        'submission_id' => $submissionId,
-        'uploaded_by' => $userId,
-        'document_type' => $type,
-        'file_name' => $displayName,
-        'file_path' => 'permohonan/'.$storedName,
-        'mime_type' => $mimeType,
-        'file_size' => $fileSize,
-    ]);
-}
 
     private function validateUploadedFile(
         mixed $file,
@@ -494,7 +493,7 @@ class SubmissionController extends Controller
         };
     }
 
-    private function buildDisplayDocumentName(string $instansiName, string $documentLabel, \Illuminate\Support\Carbon $timestamp): string
+    private function buildDisplayDocumentName(string $instansiName, string $documentLabel, Carbon $timestamp): string
     {
         $normalize = function (string $value): string {
             $parts = preg_split('/[^A-Za-z0-9]+/', trim($value)) ?: [];

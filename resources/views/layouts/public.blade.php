@@ -20,6 +20,7 @@
 <body class="public-page {{ $publicBodyClass }} min-h-screen bg-slate-100 text-slate-800">
     @php
         $isPublicAnalysisPage = request()->routeIs('public.analysis.*');
+        $isPublicNewsPage = request()->routeIs('public.news.*');
     @endphp
 
     <header class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
@@ -37,13 +38,15 @@
                 <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                     <a href="#beranda" class="hover:text-blue-900 transition-colors">Beranda</a>
                     <a href="#berita" class="hover:text-blue-900 transition-colors">Berita Terkini</a>
+                    <a href="{{ route('public.analysis.index') }}" class="hover:text-blue-900 transition-colors">Hasil Analisis</a>
                     <a href="#tentang-kami" class="hover:text-blue-900 transition-colors">Tentang Kami</a>
                     <a href="#kontak" class="hover:text-blue-900 transition-colors">Kontak Kami</a>
                 </nav>
             @else
                 <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                     <a href="{{ route('home') }}" class="hover:text-blue-900 transition-colors">Beranda</a>
-                    <a href="{{ route('public.analysis.index') }}" class="{{ $isPublicAnalysisPage ? 'text-blue-900' : 'hover:text-blue-900' }} transition-colors">Hasil Analisis</a>
+                    <a href="{{ route('public.analysis.index') }}" class="{{ $isPublicAnalysisPage ? 'text-blue-900 font-bold' : 'hover:text-blue-900' }} transition-colors">Hasil Analisis</a>
+                    <a href="{{ route('public.news.index') }}" class="{{ $isPublicNewsPage ? 'text-blue-900 font-bold' : 'hover:text-blue-900' }} transition-colors">Berita</a>
                 </nav>
             @endif
 
@@ -96,17 +99,17 @@
             <a href="{{ route('home') }}#beranda" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Beranda
             </a>
-            <a href="{{ route('home') }}#berita" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+            <a href="{{ route('public.news.index') }}" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold {{ $isPublicNewsPage ? 'bg-[#eef2ff] text-[#1f275e]' : 'text-slate-700 hover:bg-slate-100' }}">
                 Berita Terkini
+            </a>
+            <a href="{{ route('public.analysis.index') }}" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold {{ $isPublicAnalysisPage ? 'bg-[#eef2ff] text-[#1f275e]' : 'text-slate-700 hover:bg-slate-100' }}">
+                Hasil Analisis
             </a>
             <a href="{{ route('home') }}#tentang-kami" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Tentang Kami
             </a>
             <a href="{{ route('home') }}#kontak" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
                 Kontak Kami
-            </a>
-            <a href="{{ route('public.analysis.index') }}" data-sidebar-link class="block rounded-xl px-4 py-3 text-sm font-semibold {{ $isPublicAnalysisPage ? 'bg-[#eef2ff] text-[#1f275e]' : 'text-slate-700 hover:bg-slate-100' }}">
-                Hasil Analisis
             </a>
         </nav>
 

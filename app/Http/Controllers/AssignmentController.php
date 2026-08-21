@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\WorkflowNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -21,8 +22,7 @@ class AssignmentController extends Controller
 {
     public function __construct(
         private readonly WorkflowNotificationService $workflowNotificationService
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -539,7 +539,7 @@ class AssignmentController extends Controller
         ];
     }
 
-    private function buildDisplayDocumentName(string $instansiName, string $documentLabel, \Illuminate\Support\Carbon $timestamp): string
+    private function buildDisplayDocumentName(string $instansiName, string $documentLabel, Carbon $timestamp): string
     {
         $normalize = function (string $value): string {
             $parts = preg_split('/[^A-Za-z0-9]+/', trim($value)) ?: [];

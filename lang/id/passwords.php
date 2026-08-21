@@ -7,4 +7,3 @@ return [
     'token' => 'Token reset password tidak valid atau sudah kedaluwarsa.',
     'user' => 'Kami tidak menemukan pengguna dengan alamat email tersebut.',
 ];
-

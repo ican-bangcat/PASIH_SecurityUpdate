@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GuideDocument;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -181,7 +182,7 @@ class GuideManagementController extends Controller
         ];
     }
 
-    private function buildDisplayDocumentName(\Illuminate\Support\Carbon $timestamp): string
+    private function buildDisplayDocumentName(Carbon $timestamp): string
     {
         return 'Admin_BukuPanduan_'.$timestamp->format('YmdHis');
     }
@@ -201,6 +202,7 @@ class GuideManagementController extends Controller
         foreach ($candidates as $path) {
             if (is_file($path)) {
                 @unlink($path);
+
                 return;
             }
         }

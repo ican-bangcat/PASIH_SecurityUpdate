@@ -1,16 +1,19 @@
 <?php
 
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AccountManagementController;
 use App\Http\Controllers\Admin\GuideManagementController;
 use App\Http\Controllers\Admin\InstitutionManagementController;
+use App\Http\Controllers\Admin\NewsManagementController;
+use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentPreviewController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicAnalysisController;
+use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\SubmissionController;
+use App\Models\News;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,8 +21,22 @@ Route::get('/', function () {
         return redirect()->route('dashboard');
     }
 
-    return view('pages.public.analysis.welcome');
+    $latestNews = News::query()
+        ->published()
+        ->with('author')
+        ->latest('published_at')
+        ->take(3)
+        ->get();
+
+    return view('pages.public.analysis.welcome', [
+        'latestNews' => $latestNews,
+    ]);
 })->name('home');
+
+Route::get('/berita', [PublicNewsController::class, 'index'])
+    ->name('public.news.index');
+Route::get('/berita/{slug}', [PublicNewsController::class, 'show'])
+    ->name('public.news.show');
 
 Route::get('/publik/hasil-analisis', [PublicAnalysisController::class, 'index'])
     ->name('public.analysis.index');
@@ -84,6 +101,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/buku-panduan/{guide}/edit', [GuideManagementController::class, 'edit'])->name('admin.guides.edit');
         Route::put('/admin/buku-panduan/{guide}', [GuideManagementController::class, 'update'])->name('admin.guides.update');
         Route::delete('/admin/buku-panduan/{guide}', [GuideManagementController::class, 'destroy'])->name('admin.guides.destroy');
+
+        Route::get('/admin/news', [NewsManagementController::class, 'index'])->name('admin.news.index');
+        Route::get('/admin/news/create', [NewsManagementController::class, 'create'])->name('admin.news.create');
+        Route::post('/admin/news', [NewsManagementController::class, 'store'])->name('admin.news.store');
+        Route::get('/admin/news/{news}', [NewsManagementController::class, 'show'])->name('admin.news.show');
+        Route::get('/admin/news/{news}/edit', [NewsManagementController::class, 'edit'])->name('admin.news.edit');
+        Route::put('/admin/news/{news}', [NewsManagementController::class, 'update'])->name('admin.news.update');
+        Route::delete('/admin/news/{news}', [NewsManagementController::class, 'destroy'])->name('admin.news.destroy');
     });
 
     Route::middleware('role:operator_pemda,operator_kanwil,ketua_tim_analisis,kakanwil,kepala_divisi_p3h,analis_hukum')->group(function () {

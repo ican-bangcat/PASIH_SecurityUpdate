@@ -56,4 +56,3 @@ return new class extends Migration
         DB::table('roles')->whereIn('nama_role', ['kakanwil', 'kepala_divisi_p3h'])->delete();
     }
 };
-
