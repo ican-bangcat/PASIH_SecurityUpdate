@@ -25,32 +25,39 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validated = $request->validate([
+        $recaptchaEnabled = (bool) config('services.recaptcha.enabled', true) && ! empty(config('services.recaptcha.site_key'));
+
+        $rules = [
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
-            // 'g-recaptcha-response' => ['required', 'string'],
-        ], [
-            // 'g-recaptcha-response.required' => 'Silakan centang reCAPTCHA terlebih dahulu.',
+        ];
+
+        if ($recaptchaEnabled) {
+            $rules['g-recaptcha-response'] = ['required', 'string'];
+        }
+
+        $validated = $request->validate($rules, [
+            'g-recaptcha-response.required' => 'Silakan centang reCAPTCHA terlebih dahulu.',
         ]);
 
-        /* reCAPTCHA Sementara Dinonaktifkan untuk Dev
-        $recaptchaToken = $request->input('g-recaptcha-response');
+        if ($recaptchaEnabled) {
+            $recaptchaToken = $request->input('g-recaptcha-response');
 
-        if ($recaptchaToken !== 'local-dev-bypass') {
-            $recaptchaResponse = Http::asForm()->post(
-                config('services.recaptcha.verify_url'),
-                [
-                    'secret' => config('services.recaptcha.secret_key'),
-                    'response' => $recaptchaToken,
-                    'remoteip' => $request->ip(),
-                ]
-            );
+            if ($recaptchaToken !== 'local-dev-bypass') {
+                $recaptchaResponse = Http::asForm()->post(
+                    config('services.recaptcha.verify_url'),
+                    [
+                        'secret' => config('services.recaptcha.secret_key'),
+                        'response' => $recaptchaToken,
+                        'remoteip' => $request->ip(),
+                    ]
+                );
 
-            if (! $recaptchaResponse->successful() || ! data_get($recaptchaResponse->json(), 'success', false)) {
-                return back()->withErrors(['email' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.'])->onlyInput('email');
+                if (! $recaptchaResponse->successful() || ! data_get($recaptchaResponse->json(), 'success', false)) {
+                    return back()->withErrors(['email' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.'])->onlyInput('email');
+                }
             }
         }
-        */
 
         $credentials = [
             'email' => $validated['email'],

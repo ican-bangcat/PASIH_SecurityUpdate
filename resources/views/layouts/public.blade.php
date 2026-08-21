@@ -50,10 +50,19 @@
                 </nav>
             @endif
 
-            <div class="flex items-center gap-4">
-                <a href="{{ route('login') }}" class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-sm transition-colors shadow-sm">
-                    Masuk
-                </a>
+            <div class="flex items-center gap-3">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="hidden md:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-blue-900 hover:bg-blue-800 text-white font-semibold text-sm transition-colors shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10" />
+                        </svg>
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-sm transition-colors shadow-sm">
+                        Masuk
+                    </a>
+                @endauth
                 <button
                     type="button"
                     data-sidebar-toggle
@@ -114,13 +123,23 @@
         </nav>
 
         <div class="public-sidebar-login-wrap mt-auto px-4 py-4">
-            <a
-                href="{{ route('login') }}"
-                data-sidebar-link
-                class="block w-full rounded-xl px-4 py-3 text-sm font-semibold bg-[#1f275e] text-white hover:bg-[#27316a] text-center"
-            >
-                Login
-            </a>
+            @auth
+                <a
+                    href="{{ route('dashboard') }}"
+                    data-sidebar-link
+                    class="block w-full rounded-xl px-4 py-3 text-sm font-semibold bg-blue-900 text-white hover:bg-blue-800 text-center shadow-sm"
+                >
+                    🚀 Buka Dashboard
+                </a>
+            @else
+                <a
+                    href="{{ route('login') }}"
+                    data-sidebar-link
+                    class="block w-full rounded-xl px-4 py-3 text-sm font-semibold bg-[#1f275e] text-white hover:bg-[#27316a] text-center"
+                >
+                    Masuk
+                </a>
+            @endauth
         </div>
     </aside>
 

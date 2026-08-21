@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AccountManagementController;
 use App\Http\Controllers\Admin\ArchiveAnalysisManagementController;
 use App\Http\Controllers\Admin\GuideManagementController;
 use App\Http\Controllers\Admin\InstitutionManagementController;
+use App\Http\Controllers\Admin\LandingBannerManagementController;
 use App\Http\Controllers\Admin\NewsManagementController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AuthController;
@@ -14,13 +15,12 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicAnalysisController;
 use App\Http\Controllers\PublicNewsController;
 use App\Http\Controllers\SubmissionController;
+use App\Models\LandingBanner;
 use App\Models\News;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
+    $heroSlides = LandingBanner::query()->active()->get();
 
     $latestNews = News::query()
         ->published()
@@ -30,6 +30,7 @@ Route::get('/', function () {
         ->get();
 
     return view('pages.public.analysis.welcome', [
+        'heroSlides' => $heroSlides,
         'latestNews' => $latestNews,
     ]);
 })->name('home');
@@ -110,6 +111,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/news/{news}/edit', [NewsManagementController::class, 'edit'])->name('admin.news.edit');
         Route::put('/admin/news/{news}', [NewsManagementController::class, 'update'])->name('admin.news.update');
         Route::delete('/admin/news/{news}', [NewsManagementController::class, 'destroy'])->name('admin.news.destroy');
+
+        Route::get('/admin/landing-banners', [LandingBannerManagementController::class, 'index'])->name('admin.banners.index');
+        Route::get('/admin/landing-banners/create', [LandingBannerManagementController::class, 'create'])->name('admin.banners.create');
+        Route::post('/admin/landing-banners', [LandingBannerManagementController::class, 'store'])->name('admin.banners.store');
+        Route::get('/admin/landing-banners/{banner}/edit', [LandingBannerManagementController::class, 'edit'])->name('admin.banners.edit');
+        Route::put('/admin/landing-banners/{banner}', [LandingBannerManagementController::class, 'update'])->name('admin.banners.update');
+        Route::delete('/admin/landing-banners/{banner}', [LandingBannerManagementController::class, 'destroy'])->name('admin.banners.destroy');
+        Route::patch('/admin/landing-banners/{banner}/toggle-status', [LandingBannerManagementController::class, 'toggleStatus'])->name('admin.banners.toggle-status');
 
         Route::get('/admin/arsip-analisis', [ArchiveAnalysisManagementController::class, 'index'])->name('admin.archive-analysis.index');
         Route::get('/admin/arsip-analisis/create', [ArchiveAnalysisManagementController::class, 'create'])->name('admin.archive-analysis.create');

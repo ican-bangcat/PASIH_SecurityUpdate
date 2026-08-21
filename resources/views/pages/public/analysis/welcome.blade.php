@@ -39,38 +39,32 @@
                         
                         <!-- Slider Images -->
                         <div id="hero-slider" class="relative w-full h-full">
-                            @php
-                                $heroSlides = [
-                                    'images/2000.jpg.jpeg',
-                                    'images/2001.jpeg',
-                                    'images/2002.jpeg',
-                                    'images/2004.jpg.jpeg',
-                                    'images/2005.jpeg',
-                                    'images/2006.jpeg',
-                                    'images/2007.jpg.jpeg',
-                                    'images/2008.jpg.jpeg',
-                                    'images/2009.jpg.jpeg',
-                                    'images/2010.jpeg',
-                                ];
-                            @endphp
-                            @foreach ($heroSlides as $index => $slide)
-                                <img src="{{ asset($slide) }}" alt="Hero Slide {{ $index + 1 }}" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}" />
-                            @endforeach
+                            @forelse ($heroSlides ?? [] as $index => $slide)
+                                @php
+                                    $imgUrl = is_string($slide) ? asset($slide) : ($slide->image_url ?? asset('images/2000.jpg.jpeg'));
+                                    $slideTitle = is_string($slide) ? 'Foto Kegiatan ' . ($index + 1) : ($slide->title ?? 'Foto Kegiatan ' . ($index + 1));
+                                @endphp
+                                <img src="{{ $imgUrl }}" alt="{{ $slideTitle }}" class="hero-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}" />
+                            @empty
+                                <img src="{{ asset('images/2000.jpg.jpeg') }}" alt="Foto Kegiatan" class="hero-slide absolute inset-0 w-full h-full object-cover opacity-100" />
+                            @endforelse
                         </div>
 
                         <!-- Dots Indicator -->
-                        <div class="absolute bottom-2.5 sm:bottom-3.5 left-0 right-0 z-20 flex justify-center items-center pointer-events-auto px-2">
-                            <div class="bg-slate-900/40 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20 shadow-sm max-w-full overflow-x-auto">
-                                @foreach ($heroSlides as $index => $slide)
-                                    <button 
-                                        type="button" 
-                                        class="hero-dot {{ $index === 0 ? 'w-4 sm:w-5 bg-yellow-400 opacity-100' : 'w-1.5 sm:w-2 bg-white/70 opacity-60 hover:opacity-100' }} !min-h-0 !h-1.5 sm:!h-2 !p-0 !border-0 rounded-full transition-all duration-300 cursor-pointer shrink-0" 
-                                        onclick="setSlide({{ $index }})" 
-                                        aria-label="Slide {{ $index + 1 }}"
-                                    ></button>
-                                @endforeach
+                        @if(!empty($heroSlides) && count($heroSlides) > 1)
+                            <div class="absolute bottom-2.5 sm:bottom-3.5 left-0 right-0 z-20 flex justify-center items-center pointer-events-auto px-2">
+                                <div class="bg-slate-900/40 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20 shadow-sm max-w-full overflow-x-auto">
+                                    @foreach ($heroSlides as $index => $slide)
+                                        <button 
+                                            type="button" 
+                                            class="hero-dot {{ $index === 0 ? 'w-4 sm:w-5 bg-yellow-400 opacity-100' : 'w-1.5 sm:w-2 bg-white/70 opacity-60 hover:opacity-100' }} !min-h-0 !h-1.5 sm:!h-2 !p-0 !border-0 rounded-full transition-all duration-300 cursor-pointer shrink-0" 
+                                            onclick="setSlide({{ $index }})" 
+                                            aria-label="Slide {{ $index + 1 }}"
+                                        ></button>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
 
                     <!-- Logo Pemda Under Hero Image -->
@@ -183,8 +177,8 @@ Kami berkomitmen memberikan pendampingan secara profesional dalam tahapan analis
                         </li>
                     </ul>
                     <div class="pt-4">
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-900 text-white font-semibold text-sm hover:bg-blue-800 transition-colors">
-                            Mulai Sekarang
+                        <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-900 text-white font-semibold text-sm hover:bg-blue-800 transition-colors">
+                            {{ auth()->check() ? 'Buka Dashboard' : 'Mulai Sekarang' }}
                         </a>
                     </div>
                 </div>

@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
             'id_instansi' => $instansiKanwil->id_instansi,
         ]);
 
-        $this->call(NewsSeeder::class);
+        $this->call([
+            NewsSeeder::class,
+            LandingBannerSeeder::class,
+        ]);
     }
 }

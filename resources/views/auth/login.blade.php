@@ -159,11 +159,12 @@
                     </a>
                 </div>
 
-                {{-- reCAPTCHA Sementara Dinonaktifkan untuk Dev
-                <div class="pt-2 flex justify-start recaptcha-wrap">
-                    <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
-                </div>
-                --}}
+                @if(config('services.recaptcha.enabled', true) && config('services.recaptcha.site_key'))
+                    <div class="pt-2 flex justify-start recaptcha-wrap">
+                        <div class="g-recaptcha recaptcha-el" data-sitekey="{{ config('services.recaptcha.site_key') }}" data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"></div>
+                    </div>
+                    <p id="recaptcha-inline-error" class="hidden text-rose-500 text-xs font-semibold">Silakan centang reCAPTCHA terlebih dahulu.</p>
+                @endif
 
                 <!-- Submit Button -->
                 <button type="submit" class="w-full h-12 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-base shadow-lg shadow-yellow-500/30 transition-all flex items-center justify-center gap-2">
@@ -211,16 +212,16 @@
       togglePasswordButton.setAttribute('aria-pressed', String(isHidden));
     });
 
-    /* reCAPTCHA submit listener dimatikan sementara
     loginForm.addEventListener('submit', function (event) {
-      const recaptchaValue = document.querySelector('[name="g-recaptcha-response"]')?.value;
-
-      if (!recaptchaValue) {
-        event.preventDefault();
-        recaptchaInlineError.classList.remove('hidden');
+      const recaptchaEl = document.querySelector('.g-recaptcha');
+      if (recaptchaEl) {
+        const recaptchaValue = document.querySelector('[name="g-recaptcha-response"]')?.value;
+        if (!recaptchaValue) {
+          event.preventDefault();
+          if (recaptchaInlineError) recaptchaInlineError.classList.remove('hidden');
+        }
       }
     });
-    */
 
     [emailInput, passwordField].forEach(function (field) {
       if (!field) {
