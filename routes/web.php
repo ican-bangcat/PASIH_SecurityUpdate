@@ -168,6 +168,13 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:ketua_tim_analisis')->group(function () {
+        Route::get('/submissions/{submission}/rejection-reply', [SubmissionController::class, 'rejectionReplyForm'])
+            ->whereNumber('submission')
+            ->name('submissions.rejection-reply.form');
+        Route::post('/submissions/{submission}/rejection-reply', [SubmissionController::class, 'storeRejectionReply'])
+            ->whereNumber('submission')
+            ->name('submissions.rejection-reply.store');
+
         Route::get('/assignments/{assignment}/assign-pic', [AssignmentController::class, 'assignPicForm'])
             ->whereNumber('assignment')
             ->name('assignments.assign-pic.form');

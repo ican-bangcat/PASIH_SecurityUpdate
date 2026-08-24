@@ -73,7 +73,7 @@
                 $assignmentWithSuratBalasan = $submission->assignments
                     ->sortByDesc('id')
                     ->first(fn ($item) => $item->kemenkumReplyDocument);
-                $suratBalasanDocument = $assignmentWithSuratBalasan?->kemenkumReplyDocument;
+                $suratBalasanDocument = $assignmentWithSuratBalasan?->kemenkumReplyDocument ?? $submission->replyDocument;
                 $dispositionUser = $submission->divisionOperator ?? $submission->latestDisposition?->toUser;
                 $dispositionRoleLabel = $dispositionUser ? 'Kepala Divisi P3H' : '-';
 
@@ -82,6 +82,7 @@
                   'rejected' => 'analisis-rejected',
                   'revised' => 'analisis-revised',
                   'assigned' => 'permohonan-available',
+                  'pending_reply_letter' => 'analisis-revised',
                   'completed' => 'permohonan-done',
                   default => 'analisis-submitted',
                 };
@@ -166,6 +167,18 @@
                           </svg>
                         </a>
                       @endif
+                    @endif
+
+                    @if(auth()->user()->role->value === 'ketua_tim_analisis' && $submission->status->value === 'pending_reply_letter')
+                      <a
+                        href="{{ route('submissions.rejection-reply.form', $submission) }}"
+                        class="h-8 w-8 rounded-md bg-amber-600 text-white inline-flex items-center justify-center"
+                        title="Unggah Surat Balasan Penolakan"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
+                        </svg>
+                      </a>
                     @endif
 
                     @if(in_array(auth()->user()->role->value, ['kakanwil', 'kepala_divisi_p3h'], true))

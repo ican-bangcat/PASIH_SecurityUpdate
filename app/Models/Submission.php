@@ -66,6 +66,11 @@ class Submission extends Model
         return $this->hasMany(Assignment::class);
     }
 
+    public function replyDocument()
+    {
+        return $this->hasOne(AssignmentKemenkumReplyDocument::class, 'submission_id')->latestOfMany('id');
+    }
+
     public function scopeWhereStatus($query, string $status)
     {
         return $query->whereHas('latestStatus', function ($statusQuery) use ($status): void {

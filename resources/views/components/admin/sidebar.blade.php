@@ -25,7 +25,7 @@
   } else {
       $items[] = ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => ['dashboard'], 'icon_key' => 'dashboard'];
 
-      if (! in_array($role, ['analis_hukum', 'ketua_tim_analisis'], true)) {
+      if (! in_array($role, ['analis_hukum'], true)) {
           $items[] = ['label' => 'Permohonan', 'href' => route('submissions.index'), 'active' => ['submissions.*'], 'icon_key' => 'permohonan'];
       }
 

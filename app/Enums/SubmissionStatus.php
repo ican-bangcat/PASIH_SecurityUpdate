@@ -10,6 +10,7 @@ enum SubmissionStatus: string
     case Accepted = 'accepted';
     case Disposed = 'disposed';
     case Assigned = 'assigned';
+    case PendingReplyLetter = 'pending_reply_letter';
     case Completed = 'completed';
 
     public function label(): string
@@ -21,6 +22,7 @@ enum SubmissionStatus: string
             self::Accepted => 'Diterima',
             self::Disposed => 'Didisposisikan',
             self::Assigned => 'Dalam Proses Analisis',
+            self::PendingReplyLetter => 'Menunggu Surat Balasan Penolakan',
             self::Completed => 'Selesai',
         };
     }

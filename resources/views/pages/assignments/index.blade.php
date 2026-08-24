@@ -12,6 +12,34 @@
       </p>
     </div>
 
+    @if(isset($pendingReplySubmissions) && $pendingReplySubmissions->isNotEmpty())
+      <div class="rounded-xl bg-amber-50 border border-amber-300 p-4 space-y-3">
+        <div class="flex items-center gap-2 text-amber-900 font-bold text-sm sm:text-base">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          Permohonan Ditolak - Menunggu Upload Surat Balasan Penolakan ({{ $pendingReplySubmissions->count() }})
+        </div>
+        <p class="text-xs sm:text-sm text-slate-700">Permohonan berikut telah ditolak dan membutuhkan pengunggahan Surat Balasan Penolakan dari Ketua Tim Analisis sebelum dikirim ke Pemda:</p>
+        <div class="divide-y divide-amber-200/60 rounded-lg bg-white ring-1 ring-amber-200">
+          @foreach($pendingReplySubmissions as $pendingSub)
+            <div class="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+              <div>
+                <div class="font-semibold text-slate-800">{{ $pendingSub->perda_title }}</div>
+                <div class="text-xs text-slate-500">{{ $pendingSub->submitter?->instansi?->nama_instansi ?? '-' }} • {{ $pendingSub->nomor_surat }}</div>
+              </div>
+              <a href="{{ route('submissions.rejection-reply.form', $pendingSub) }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-600 text-white text-xs font-semibold hover:bg-amber-700 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
+                </svg>
+                Unggah Surat Balasan
+              </a>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    @endif
+
     <div class="rounded-xl bg-white ring-1 ring-slate-200 overflow-hidden">
       <div class="px-4 py-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <form method="GET" action="{{ route('assignments.index') }}" class="flex items-center gap-2 text-sm text-slate-700">

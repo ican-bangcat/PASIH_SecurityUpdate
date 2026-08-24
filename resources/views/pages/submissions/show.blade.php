@@ -65,7 +65,8 @@
       $latestDisposition = $submission->latestDisposition;
       $suratBalasanKemenkum = $submission->assignments
         ->sortByDesc('id')
-        ->first(fn ($assignment) => $assignment->kemenkumReplyDocument)?->kemenkumReplyDocument;
+        ->first(fn ($assignment) => $assignment->kemenkumReplyDocument)?->kemenkumReplyDocument
+        ?? $submission->replyDocument;
       $formatDisplayFileName = function ($document, string $documentLabel) use ($submission): string {
         $fromDb = trim((string) ($document?->file_name ?? ''));
         if ($fromDb !== '') {

@@ -74,8 +74,18 @@ class AssignmentController extends Controller
             });
         }
 
+        $pendingReplySubmissions = collect();
+        if ($role === 'ketua_tim_analisis') {
+            $pendingReplySubmissions = Submission::query()
+                ->whereStatus('pending_reply_letter')
+                ->with(['submitter.instansi', 'latestStatus'])
+                ->latest()
+                ->get();
+        }
+
         return view('pages.assignments.index', [
             'assignments' => $query->paginate($perPage)->withQueryString(),
+            'pendingReplySubmissions' => $pendingReplySubmissions,
             'analysts' => User::query()
                 ->whereHas('roleRef', function ($roleQuery): void {
                     $roleQuery->where('nama_role', 'analis_hukum');
@@ -221,20 +231,28 @@ class AssignmentController extends Controller
         abort_unless(in_array($request->user()->role->value, ['kakanwil', 'kepala_divisi_p3h'], true), 403);
 
         $validated = $request->validate([
-            'instruction' => ['nullable', 'string'],
+            'decision' => ['required', Rule::in(['approve', 'reject'])],
+            'instruction' => ['nullable', 'string', 'required_if:decision,approve'],
+            'rejection_note' => ['nullable', 'string', 'required_if:decision,reject'],
         ]);
 
-        $assignment = Assignment::query()->create([
-            'submission_id' => $submission->id,
-            'assigned_by_id' => $request->user()->id,
-            'instruction' => $validated['instruction'] ?? null,
-        ]);
+        if ($validated['decision'] === 'approve') {
+            $assignment = Assignment::query()->create([
+                'submission_id' => $submission->id,
+                'assigned_by_id' => $request->user()->id,
+                'instruction' => $validated['instruction'] ?? null,
+            ]);
 
-        $submission->recordStatus('assigned', $request->user()->id);
+            $submission->recordStatus('assigned', $request->user()->id);
 
-        $this->workflowNotificationService->notifyAssignmentCreated($assignment, $request->user());
+            $this->workflowNotificationService->notifyAssignmentCreated($assignment, $request->user());
 
-        return redirect()->route('submissions.index')->with('success', 'Penugasan berhasil dibuat');
+            return redirect()->route('submissions.index')->with('success', 'Penugasan berhasil dibuat');
+        }
+
+        $submission->recordStatus('pending_reply_letter', $request->user()->id, $validated['rejection_note']);
+
+        return redirect()->route('submissions.index')->with('success', 'Permohonan ditolak dan diteruskan ke Ketua Tim untuk pengungahan Surat Balasan.');
     }
 
     public function assignPicForm(Request $request, Assignment $assignment)
@@ -293,11 +311,13 @@ class AssignmentController extends Controller
             AssignmentKemenkumReplyDocument::query()->updateOrCreate(
                 ['assignment_id' => $assignment->id],
                 [
+                    'submission_id' => $assignment->submission_id,
                     'uploaded_by' => $request->user()->id,
                     'file_name' => $stored['file_name'],
                     'file_path' => $stored['file_path'],
                     'mime_type' => $stored['mime_type'],
                     'file_size' => $stored['file_size'],
+                    'kategori_surat' => 'surat_tugas',
                 ]
             );
         });

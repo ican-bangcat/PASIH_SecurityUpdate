@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignmentKemenkumReplyDocument;
 use App\Models\Submission;
 use App\Models\SubmissionDisposition;
 use App\Models\SubmissionDocument;
@@ -24,13 +25,13 @@ class SubmissionController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        abort_unless(in_array($user->role->value, ['operator_pemda', 'operator_kanwil', 'kakanwil', 'kepala_divisi_p3h'], true), 403);
+        abort_unless(in_array($user->role->value, ['operator_pemda', 'operator_kanwil', 'kakanwil', 'kepala_divisi_p3h', 'ketua_tim_analisis'], true), 403);
         $perPage = (int) $request->integer('per_page', 5);
         $perPage = in_array($perPage, [5, 10, 25], true) ? $perPage : 5;
         $search = trim((string) $request->string('q'));
         $status = trim((string) $request->string('status'));
         $task = trim((string) $request->string('task'));
-        $allowedStatuses = ['submitted', 'revised', 'rejected', 'accepted', 'disposed', 'assigned', 'completed'];
+        $allowedStatuses = ['submitted', 'revised', 'rejected', 'accepted', 'disposed', 'assigned', 'pending_reply_letter', 'completed'];
         $allowedTasks = ['kanwil_validation', 'kanwil_disposition', 'ready_for_assignment'];
 
         $query = Submission::query()->with([
@@ -46,7 +47,7 @@ class SubmissionController extends Controller
         }
 
         if (in_array($user->role->value, ['kakanwil', 'kepala_divisi_p3h'], true)) {
-            $query->whereStatusIn(['disposed', 'assigned', 'completed', 'accepted']);
+            $query->whereStatusIn(['disposed', 'assigned', 'completed', 'accepted', 'pending_reply_letter', 'rejected', 'revised']);
         }
 
         if (in_array($status, $allowedStatuses, true)) {
@@ -390,7 +391,8 @@ class SubmissionController extends Controller
         $toUser = null;
 
         DB::transaction(function () use ($request, $submission, $validated, $statusNote, &$toUser): void {
-            $submission->recordStatus($validated['status'], $request->user()->id, $statusNote);
+            $recordStatus = $validated['status'] === 'rejected' ? 'pending_reply_letter' : $validated['status'];
+            $submission->recordStatus($recordStatus, $request->user()->id, $statusNote);
 
             if (! empty($validated['to_user_id'])) {
                 $toUser = User::query()->findOrFail($validated['to_user_id']);
@@ -424,6 +426,85 @@ class SubmissionController extends Controller
         return redirect()
             ->route('submissions.index')
             ->with('success', 'Status dan disposisi permohonan berhasil disimpan');
+    }
+
+    public function rejectionReplyForm(Request $request, Submission $submission)
+    {
+        abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
+        abort_unless($submission->status->value === 'pending_reply_letter', 422);
+
+        return view('pages.submissions.rejection-reply', [
+            'submission' => $submission,
+        ]);
+    }
+
+    public function storeRejectionReply(Request $request, Submission $submission)
+    {
+        abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
+        abort_unless($submission->status->value === 'pending_reply_letter', 422);
+
+        $request->validate([
+            'surat_balasan_penolakan' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
+        ]);
+
+        $file = $this->validateUploadedFile(
+            $request->file('surat_balasan_penolakan'),
+            'surat_balasan_penolakan',
+            'Upload surat balasan penolakan gagal. Pastikan ukuran file tidak melebihi batas server.'
+        );
+
+        $stored = $this->storeSubmissionReplyFile(
+            $file,
+            $submission->submitter?->instansi?->nama_instansi ?? $submission->submitter?->name ?? 'Instansi',
+            'Surat Balasan Penolakan'
+        );
+
+        DB::transaction(function () use ($request, $submission, $stored): void {
+            AssignmentKemenkumReplyDocument::query()->updateOrCreate(
+                ['submission_id' => $submission->id],
+                [
+                    'uploaded_by' => $request->user()->id,
+                    'file_name' => $stored['file_name'],
+                    'file_path' => $stored['file_path'],
+                    'mime_type' => $stored['mime_type'],
+                    'file_size' => $stored['file_size'],
+                    'kategori_surat' => 'surat_penolakan',
+                ]
+            );
+
+            $submission->recordStatus('rejected', $request->user()->id, 'Surat balasan penolakan telah diunggah oleh Ketua Tim Analisis.');
+        });
+
+        return redirect()->route('submissions.index')->with('success', 'Surat balasan penolakan berhasil diunggah');
+    }
+
+    private function storeSubmissionReplyFile(UploadedFile $file, string $instansiName, string $documentLabel): array
+    {
+        $destinationPath = public_path('storage/penugasan');
+
+        if (! is_dir($destinationPath) && ! mkdir($destinationPath, 0755, true) && ! is_dir($destinationPath)) {
+            throw ValidationException::withMessages([
+                'file' => 'Folder upload penugasan tidak dapat dibuat.',
+            ]);
+        }
+
+        $displayName = $this->buildDisplayDocumentName($instansiName, $documentLabel, now());
+        $extension = $file->getClientOriginalExtension();
+        $storedName = $displayName.($extension ? '.'.$extension : '');
+        if (file_exists($destinationPath.DIRECTORY_SEPARATOR.$storedName)) {
+            $storedName = $displayName.'_'.Str::lower(Str::random(4)).($extension ? '.'.$extension : '');
+        }
+        $fileSize = $file->getSize();
+        $mimeType = $file->getClientMimeType();
+
+        $file->move($destinationPath, $storedName);
+
+        return [
+            'file_name' => $displayName,
+            'file_path' => 'penugasan/'.$storedName,
+            'mime_type' => $mimeType,
+            'file_size' => $fileSize,
+        ];
     }
 
     private function storeDocument(
@@ -587,7 +668,7 @@ class SubmissionController extends Controller
     {
         $role = $request->user()->role->value;
 
-        if (in_array($role, ['operator_kanwil', 'kakanwil', 'kepala_divisi_p3h'], true)) {
+        if (in_array($role, ['operator_kanwil', 'kakanwil', 'kepala_divisi_p3h', 'ketua_tim_analisis'], true)) {
             return;
         }
 
