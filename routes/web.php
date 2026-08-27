@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AccountManagementController;
+use App\Http\Controllers\Admin\ArchiveAnalysisManagementController;
 use App\Http\Controllers\Admin\GuideManagementController;
 use App\Http\Controllers\Admin\InstitutionManagementController;
 use App\Http\Controllers\Admin\NewsManagementController;
@@ -109,6 +110,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/news/{news}/edit', [NewsManagementController::class, 'edit'])->name('admin.news.edit');
         Route::put('/admin/news/{news}', [NewsManagementController::class, 'update'])->name('admin.news.update');
         Route::delete('/admin/news/{news}', [NewsManagementController::class, 'destroy'])->name('admin.news.destroy');
+
+        Route::get('/admin/arsip-analisis', [ArchiveAnalysisManagementController::class, 'index'])->name('admin.archive-analysis.index');
+        Route::get('/admin/arsip-analisis/create', [ArchiveAnalysisManagementController::class, 'create'])->name('admin.archive-analysis.create');
+        Route::post('/admin/arsip-analisis', [ArchiveAnalysisManagementController::class, 'store'])->name('admin.archive-analysis.store');
+        Route::delete('/admin/arsip-analisis/{assignment}', [ArchiveAnalysisManagementController::class, 'destroy'])->name('admin.archive-analysis.destroy');
     });
 
     Route::middleware('role:operator_pemda,operator_kanwil,ketua_tim_analisis,kakanwil,kepala_divisi_p3h,analis_hukum')->group(function () {
