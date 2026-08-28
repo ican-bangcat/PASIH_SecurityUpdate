@@ -73,7 +73,7 @@ class ArchiveAnalysisManagementController extends Controller
             'perihal' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'completed_at' => ['required', 'date'],
-            'peraturan_daerah' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
+            'peraturan_daerah' => ['required', 'file', 'max:20480', 'mimes:pdf,doc,docx'],
             'hasil_analisis' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
             'ringkasan_analisis' => ['required', 'string'],
             'hasil_evaluasi' => ['required', 'string'],

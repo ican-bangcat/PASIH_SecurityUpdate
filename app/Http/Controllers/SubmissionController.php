@@ -152,7 +152,7 @@ class SubmissionController extends Controller
             'perda_title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'surat_permohonan' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
-            'peraturan_daerah' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
+            'peraturan_daerah' => ['required', 'file', 'max:20480', 'mimes:pdf,doc,docx'],
             'peraturan_pelaksana_perda' => ['nullable', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
         ]);
 
@@ -272,7 +272,7 @@ class SubmissionController extends Controller
             'perda_title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'surat_permohonan' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
-            'peraturan_daerah' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
+            'peraturan_daerah' => ['required', 'file', 'max:20480', 'mimes:pdf,doc,docx'],
             'peraturan_pelaksana_perda' => ['nullable', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
         ]);
 

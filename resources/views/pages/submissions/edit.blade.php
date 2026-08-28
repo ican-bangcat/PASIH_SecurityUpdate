@@ -119,9 +119,11 @@
 
             <label class="block text-sm font-medium text-slate-700">
               Peraturan Daerah <span class="text-red-500">*</span>
+              <span class="text-xs text-slate-500 font-normal">(Maksimal 20 MB)</span>
               <input
                 type="file"
                 name="peraturan_daerah"
+                data-max-size="20971520"
                 required
                 oninvalid="this.setCustomValidity('Silakan unggah Peraturan Daerah terlebih dahulu.')"
                 oninput="this.setCustomValidity('')"

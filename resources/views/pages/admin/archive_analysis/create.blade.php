@@ -92,8 +92,8 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <label class="block text-sm font-medium text-slate-700">
               Dokumen Peraturan Daerah (Perda) <span class="text-rose-500">*</span>
-              <p class="text-xs text-slate-500 mt-0.5">Format: PDF, DOC, DOCX. Maksimal 5 MB.</p>
-              <input type="file" name="peraturan_daerah" required accept=".pdf,.doc,.docx" class="mt-2 block w-full rounded-xl border border-[#B9B9B9] bg-white text-sm text-slate-700 file:mr-3 file:rounded-l-xl file:border-0 file:bg-slate-100 file:px-4 file:py-3 file:text-sm file:text-slate-700">
+              <p class="text-xs text-slate-500 mt-0.5">Format: PDF, DOC, DOCX. Maksimal 20 MB.</p>
+              <input type="file" name="peraturan_daerah" data-max-size="20971520" required accept=".pdf,.doc,.docx" class="mt-2 block w-full rounded-xl border border-[#B9B9B9] bg-white text-sm text-slate-700 file:mr-3 file:rounded-l-xl file:border-0 file:bg-slate-100 file:px-4 file:py-3 file:text-sm file:text-slate-700">
               @error('peraturan_daerah')
                 <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
               @enderror
