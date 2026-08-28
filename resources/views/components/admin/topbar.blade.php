@@ -85,7 +85,7 @@
           </div>
 
           <div class="px-1">
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" data-confirm-type="logout" data-confirm-message="Apakah Anda yakin ingin keluar dari aplikasi PASIH?">
               @csrf
               <button
                 type="submit"

@@ -29,6 +29,7 @@ function getSuccessTitle(message) {
 function createAlertModal({
     icon = 'question',
     title = '',
+    message = '',
     withActions = false,
     confirmText = 'Ya',
     cancelText = 'Tidak',
@@ -43,18 +44,25 @@ function createAlertModal({
         card.innerHTML = `
             ${iconMarkup[icon] || ''}
             <p class="pasih-alert-title"></p>
+            ${message ? `<p class="pasih-alert-message text-sm text-slate-600 max-w-md mx-auto leading-relaxed mt-1"></p>` : ''}
             ${
                 withActions
                     ? `<div class="pasih-alert-actions">
                         <button type="button" class="pasih-alert-btn pasih-alert-btn-yes">${confirmText}</button>
                         <button type="button" class="pasih-alert-btn pasih-alert-btn-no">${cancelText}</button>
                     </div>`
-                    : ''
+                    : `<div class="pasih-alert-actions">
+                        <button type="button" class="pasih-alert-btn pasih-alert-btn-yes px-6">OK</button>
+                    </div>`
             }
         `;
         const titleElement = card.querySelector('.pasih-alert-title');
         if (titleElement) {
             titleElement.textContent = title;
+        }
+        const messageElement = card.querySelector('.pasih-alert-message');
+        if (messageElement && message) {
+            messageElement.textContent = message;
         }
 
         overlay.appendChild(card);
@@ -82,6 +90,14 @@ function createAlertModal({
             return;
         }
 
+        const okBtn = card.querySelector('.pasih-alert-btn-yes');
+        okBtn?.addEventListener('click', () => close(true));
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) {
+                close(true);
+            }
+        });
+
         if (autoCloseMs) {
             window.setTimeout(() => close(true), autoCloseMs);
         }
@@ -97,7 +113,7 @@ function bindConfirmForms() {
 
             const confirmType = form.dataset.confirmType;
             const title = form.dataset.confirmMessage || '';
-            const icon = confirmType === 'delete' ? 'danger' : 'question';
+            const icon = (confirmType === 'delete' || confirmType === 'logout') ? 'danger' : 'question';
 
             const accepted = await createAlertModal({
                 icon,
@@ -109,6 +125,39 @@ function bindConfirmForms() {
                 form.submit();
             }
         });
+    });
+}
+
+function bindFileSizeValidation() {
+    document.addEventListener('change', (event) => {
+        const input = event.target;
+        if (!(input instanceof HTMLInputElement) || input.type !== 'file') {
+            return;
+        }
+
+        const files = input.files;
+        if (!files || files.length === 0) {
+            return;
+        }
+
+        const maxBytes = parseInt(input.dataset.maxSize || '', 10) || (5 * 1024 * 1024);
+        const maxMb = (maxBytes / (1024 * 1024)).toFixed(0);
+
+        for (let i = 0; i < files.length; i += 1) {
+            const file = files[i];
+            if (file.size > maxBytes) {
+                const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
+                input.value = '';
+
+                createAlertModal({
+                    icon: 'danger',
+                    title: 'Ukuran File Terlalu Besar',
+                    message: `File "${file.name}" (${fileSizeMb} MB) melebihi batas maksimal (${maxMb} MB). Silakan unggah file dengan ukuran yang lebih kecil.`,
+                    withActions: false,
+                });
+                return;
+            }
+        }
     });
 }
 
@@ -533,6 +582,7 @@ function initPublicTopbarScrollState() {
 
 document.addEventListener('DOMContentLoaded', () => {
     bindConfirmForms();
+    bindFileSizeValidation();
     showFlashSuccess();
     initInlinePdfViewers();
     initSidebarDrawer();
