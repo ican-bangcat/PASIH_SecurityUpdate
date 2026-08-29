@@ -181,7 +181,6 @@
             <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-50">
               <div class="min-w-0 flex-1">
                 <div class="truncate text-sm text-slate-800" title="{{ $displayFileName }}"><span>{{ $displayFileName }}</span><span class="text-slate-500" data-pdf-page-info></span></div>
-                <div class="text-xs text-slate-500">Diunggah : {{ optional($suratBalasanKemenkum->created_at)->format('d-m-Y H:i') ?: '-' }}</div>
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 @if($fileUrl)
@@ -254,7 +253,6 @@
               <div class="flex items-center justify-between gap-3 px-4 py-3 bg-white">
                 <div class="min-w-0 flex-1">
                   <div class="truncate text-sm text-slate-800" title="{{ $displayFileName }}"><span>{{ $displayFileName }}</span><span class="text-slate-500" data-pdf-page-info></span></div>
-                  <div class="text-xs text-slate-500">Diunggah : {{ optional($document->created_at)->format('d-m-Y H:i') ?: '-' }}</div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                   @if($fileUrl)

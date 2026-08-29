@@ -162,6 +162,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/submissions/{submission}', [SubmissionController::class, 'update'])
             ->whereNumber('submission')
             ->name('submissions.update');
+        Route::post('/submissions/{submission}/upload-document', [SubmissionController::class, 'uploadDocument'])
+            ->whereNumber('submission')
+            ->name('submissions.documents.upload');
+        Route::post('/submissions/{submission}/finish', [SubmissionController::class, 'finish'])
+            ->whereNumber('submission')
+            ->name('submissions.finish');
         Route::delete('/submissions/{submission}', [SubmissionController::class, 'destroy'])
             ->whereNumber('submission')
             ->name('submissions.destroy');

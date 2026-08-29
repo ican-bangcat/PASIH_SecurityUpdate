@@ -151,77 +151,29 @@ class SubmissionController extends Controller
             'perihal' => ['required', 'string', 'max:255'],
             'perda_title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'surat_permohonan' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
-            'peraturan_daerah' => ['required', 'file', 'max:20480', 'mimes:pdf,doc,docx'],
-            'peraturan_pelaksana_perda' => ['nullable', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
         ]);
 
-        $submission = null;
+        $submission = Submission::query()->create([
+            'submitter_id' => $request->user()->id,
+            'nomor_surat' => $validated['nomor_surat'],
+            'perihal' => $validated['perihal'],
+            'perda_title' => trim((string) $validated['perda_title']),
+            'description' => $validated['description'] ?? null,
+        ]);
+        $submission->recordStatus('submitted');
 
-        DB::transaction(function () use ($request, $validated, &$submission): void {
-
-            $submission = Submission::query()->create([
-                'submitter_id' => $request->user()->id,
-                'nomor_surat' => $validated['nomor_surat'],
-                'perihal' => $validated['perihal'],
-                'perda_title' => trim((string) $validated['perda_title']),
-                'description' => $validated['description'] ?? null,
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data permohonan berhasil disimpan. Silakan unggah dokumen di bawah ini.',
+                'submission_id' => $submission->id,
+                'edit_url' => route('submissions.edit', $submission),
+                'upload_url' => route('submissions.documents.upload', $submission),
+                'finish_url' => route('submissions.finish', $submission),
             ]);
-            $submission->recordStatus('submitted');
-
-            $suratPermohonanFile = $this->validateUploadedFile(
-                $request->file('surat_permohonan'),
-                'surat_permohonan',
-                'Upload dokumen Surat Permohonan gagal. Pastikan ukuran file tidak melebihi batas server.'
-            );
-
-            $this->storeDocument(
-                $submission->id,
-                $request->user()->id,
-                $suratPermohonanFile,
-                'surat_permohonan',
-                $request->user()->instansi?->nama_instansi,
-                'Surat Permohonan'
-            );
-
-            $peraturanDaerahFile = $this->validateUploadedFile(
-                $request->file('peraturan_daerah'),
-                'peraturan_daerah',
-                'Upload dokumen Peraturan Daerah gagal. Pastikan ukuran file tidak melebihi batas server.'
-            );
-
-            $this->storeDocument(
-                $submission->id,
-                $request->user()->id,
-                $peraturanDaerahFile,
-                'peraturan_daerah',
-                $request->user()->instansi?->nama_instansi,
-                'Peraturan Daerah'
-            );
-
-            if ($request->hasFile('peraturan_pelaksana_perda')) {
-                $peraturanPelaksanaPerdaFile = $this->validateUploadedFile(
-                    $request->file('peraturan_pelaksana_perda'),
-                    'peraturan_pelaksana_perda',
-                    'Upload dokumen Peraturan Pelaksana Perda gagal. Pastikan ukuran file tidak melebihi batas server.'
-                );
-
-                $this->storeDocument(
-                    $submission->id,
-                    $request->user()->id,
-                    $peraturanPelaksanaPerdaFile,
-                    'peraturan_pelaksana_perda',
-                    $request->user()->instansi?->nama_instansi,
-                    'Peraturan Pelaksana Perda'
-                );
-            }
-        });
-
-        if ($submission instanceof Submission) {
-            $this->workflowNotificationService->notifyNewSubmission($submission, $request->user());
         }
 
-        return redirect()->route('submissions.index')->with('success', 'Permohonan berhasil dibuat');
+        return redirect()->route('submissions.edit', $submission)->with('success', 'Data permohonan berhasil disimpan. Silakan unggah dokumen di bawah ini.');
     }
 
     public function show(Request $request, Submission $submission)
@@ -255,6 +207,8 @@ class SubmissionController extends Controller
             403
         );
 
+        $submission->load(['documents', 'submitter.instansi']);
+
         return view('pages.submissions.edit', ['submission' => $submission]);
     }
 
@@ -271,9 +225,6 @@ class SubmissionController extends Controller
             'perihal' => ['required', 'string', 'max:255'],
             'perda_title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'surat_permohonan' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
-            'peraturan_daerah' => ['required', 'file', 'max:20480', 'mimes:pdf,doc,docx'],
-            'peraturan_pelaksana_perda' => ['nullable', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
         ]);
 
         $submission->update([
@@ -282,55 +233,101 @@ class SubmissionController extends Controller
             'perda_title' => trim((string) $validated['perda_title']),
             'description' => $validated['description'] ?? null,
         ]);
-        $submission->recordStatus('submitted');
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data permohonan berhasil diperbarui.',
+            ]);
+        }
+
+        return redirect()->route('submissions.edit', $submission)->with('success', 'Data permohonan berhasil diperbarui.');
+    }
+
+    public function uploadDocument(Request $request, Submission $submission)
+    {
+        abort_unless(
+            $request->user()->role->value === 'operator_pemda' &&
+            $submission->submitter_id === $request->user()->id,
+            403
+        );
+
+        $validated = $request->validate([
+            'document_type' => ['required', Rule::in(['surat_permohonan', 'peraturan_daerah', 'peraturan_pelaksana_perda'])],
+            'file' => ['required', 'file', 'max:10240', 'mimes:pdf,doc,docx'],
+        ]);
+
+        $type = $validated['document_type'];
+        $label = $this->mapDocumentTypeToLabel($type);
+
+        $uploadedFile = $this->validateUploadedFile(
+            $request->file('file'),
+            'file',
+            "Upload dokumen {$label} gagal. Pastikan ukuran file maksimal 10 MB dan berformat PDF/DOC/DOCX."
+        );
+
+        $doc = $this->storeDocument(
+            $submission->id,
+            $request->user()->id,
+            $uploadedFile,
+            $type,
+            $request->user()->instansi?->nama_instansi,
+            $label
+        );
+
+        $isPdf = str_ends_with(strtolower($doc->file_name), '.pdf') || str_ends_with(strtolower($doc->file_path), '.pdf');
+        $previewUrl = $isPdf ? route('documents.preview.submission', $doc) : asset('storage/'.$doc->file_path);
+
+        $hasSuratPermohonan = $submission->documents()->where('document_type', 'surat_permohonan')->exists();
+        $hasPerda = $submission->documents()->where('document_type', 'peraturan_daerah')->exists();
+
+        return response()->json([
+            'success' => true,
+            'message' => "{$label} berhasil diunggah.",
+            'document' => [
+                'id' => $doc->id,
+                'document_type' => $doc->document_type,
+                'file_name' => $doc->file_name,
+                'preview_url' => $previewUrl,
+                'is_pdf' => $isPdf,
+            ],
+            'ready_to_finish' => $hasSuratPermohonan && $hasPerda,
+        ]);
+    }
+
+    public function finish(Request $request, Submission $submission)
+    {
+        abort_unless(
+            $request->user()->role->value === 'operator_pemda' &&
+            $submission->submitter_id === $request->user()->id,
+            403
+        );
+
+        $hasSuratPermohonan = $submission->documents()->where('document_type', 'surat_permohonan')->exists();
+        $hasPerda = $submission->documents()->where('document_type', 'peraturan_daerah')->exists();
+
+        if (! $hasSuratPermohonan || ! $hasPerda) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Harap unggah Surat Permohonan dan Peraturan Daerah terlebih dahulu sebelum menyelesaikan permohonan.',
+                ], 422);
+            }
+
+            return back()->withErrors(['documents' => 'Harap unggah Surat Permohonan dan Peraturan Daerah terlebih dahulu sebelum menyelesaikan permohonan.']);
+        }
 
         $this->workflowNotificationService->notifyNewSubmission($submission, $request->user());
 
-        $suratPermohonanFile = $this->validateUploadedFile(
-            $request->file('surat_permohonan'),
-            'surat_permohonan',
-            'Upload dokumen Surat Permohonan gagal. Pastikan ukuran file tidak melebihi batas server.'
-        );
-        $this->storeDocument(
-            $submission->id,
-            $request->user()->id,
-            $suratPermohonanFile,
-            'dokumen_pendukung',
-            $request->user()->instansi?->nama_instansi,
-            'Surat Permohonan'
-        );
-
-        $peraturanDaerahFile = $this->validateUploadedFile(
-            $request->file('peraturan_daerah'),
-            'peraturan_daerah',
-            'Upload dokumen Peraturan Daerah gagal. Pastikan ukuran file tidak melebihi batas server.'
-        );
-        $this->storeDocument(
-            $submission->id,
-            $request->user()->id,
-            $peraturanDaerahFile,
-            'dokumen_pendukung',
-            $request->user()->instansi?->nama_instansi,
-            'Peraturan Daerah'
-        );
-
-        if ($request->hasFile('peraturan_pelaksana_perda')) {
-            $peraturanPelaksanaPerdaFile = $this->validateUploadedFile(
-                $request->file('peraturan_pelaksana_perda'),
-                'peraturan_pelaksana_perda',
-                'Upload dokumen Peraturan Pelaksana Perda gagal. Pastikan ukuran file tidak melebihi batas server.'
-            );
-            $this->storeDocument(
-                $submission->id,
-                $request->user()->id,
-                $peraturanPelaksanaPerdaFile,
-                'dokumen_pendukung',
-                $request->user()->instansi?->nama_instansi,
-                'Peraturan Pelaksana Perda'
-            );
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Permohonan berhasil diajukan.',
+                'redirect_url' => route('submissions.index'),
+            ]);
         }
 
-        return redirect()->route('submissions.index')->with('success', 'Permohonan berhasil diperbarui');
+        return redirect()->route('submissions.index')->with('success', 'Permohonan berhasil diajukan.');
     }
 
     public function destroy(Request $request, Submission $submission)
@@ -514,7 +511,7 @@ class SubmissionController extends Controller
         string $type,
         ?string $instansiName = null,
         ?string $documentLabel = null
-    ): void {
+    ): SubmissionDocument {
         $destinationPath = public_path('storage/permohonan');
 
         if (! is_dir($destinationPath) && ! mkdir($destinationPath, 0755, true) && ! is_dir($destinationPath)) {
@@ -540,7 +537,29 @@ class SubmissionController extends Controller
         // Baru pindahkan
         $file->move($destinationPath, $storedName);
 
-        SubmissionDocument::query()->create([
+        $existing = SubmissionDocument::query()
+            ->where('submission_id', $submissionId)
+            ->where('document_type', $type)
+            ->first();
+
+        if ($existing) {
+            $oldFilePath = public_path('storage/'.$existing->file_path);
+            if (is_file($oldFilePath)) {
+                @unlink($oldFilePath);
+            }
+
+            $existing->update([
+                'uploaded_by' => $userId,
+                'file_name' => $displayName,
+                'file_path' => 'permohonan/'.$storedName,
+                'mime_type' => $mimeType,
+                'file_size' => $fileSize,
+            ]);
+
+            return $existing;
+        }
+
+        return SubmissionDocument::query()->create([
             'submission_id' => $submissionId,
             'uploaded_by' => $userId,
             'document_type' => $type,

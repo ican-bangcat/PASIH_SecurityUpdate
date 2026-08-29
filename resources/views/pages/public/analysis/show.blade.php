@@ -190,7 +190,6 @@
                                     <span>{{ $perdaDoc->file_name ?? 'Dokumen Peraturan Daerah' }}</span>
                                     <span id="perda-page-info" class="text-xs font-normal text-slate-500 ml-1"></span>
                                 </div>
-                                <div class="text-xs text-slate-400">Diunggah: {{ optional($perdaDoc->created_at)->format('d M Y, H:i') ?: '-' }}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
@@ -269,7 +268,6 @@
                                     <span>{{ $analysisDoc->file_name ?? 'Dokumen Hasil Analisis' }}</span>
                                     <span id="analysis-page-info" class="text-xs font-normal text-slate-500 ml-1"></span>
                                 </div>
-                                <div class="text-xs text-slate-400">Diunggah: {{ optional($analysisDoc->created_at)->format('d M Y, H:i') ?: '-' }}</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">

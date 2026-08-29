@@ -58,7 +58,6 @@
             <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-50">
               <div class="min-w-0 flex-1">
                 <div class="truncate text-sm text-slate-800" title="{{ $guide->file_name }}"><span>{{ $guide->file_name }}</span><span class="text-slate-500" data-pdf-page-info></span></div>
-                <div class="text-xs text-slate-500">Diunggah : {{ optional($guide->created_at)->format('d-m-Y H:i') ?: '-' }}</div>
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <a href="{{ $previewUrl }}" target="_blank" class="inline-flex items-center h-8 px-3 rounded-lg bg-white text-slate-700 text-xs font-semibold ring-1 ring-slate-300 hover:bg-slate-100">
