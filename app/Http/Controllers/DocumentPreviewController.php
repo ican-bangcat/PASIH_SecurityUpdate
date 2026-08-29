@@ -30,6 +30,46 @@ class DocumentPreviewController extends Controller
         return $this->previewPdf($request, $document->file_path, $document->file_name, $document->mime_type);
     }
 
+    public function downloadSubmission(SubmissionDocument $document)
+    {
+        return $this->downloadFile($document->file_path, $document->file_name, $document->mime_type);
+    }
+
+    public function downloadAssignment(AssignmentDocument $document)
+    {
+        return $this->downloadFile($document->file_path, $document->file_name, $document->mime_type);
+    }
+
+    public function downloadSuratBalasan(AssignmentKemenkumReplyDocument $document)
+    {
+        return $this->downloadFile($document->file_path, $document->file_name, $document->mime_type);
+    }
+
+    public function downloadGuide(GuideDocument $document)
+    {
+        return $this->downloadFile($document->file_path, $document->file_name, $document->mime_type);
+    }
+
+    private function downloadFile(?string $relativePath, ?string $fileName, ?string $mimeType)
+    {
+        if (empty($relativePath)) {
+            abort(404, 'File tidak tersedia.');
+        }
+
+        $absolutePath = $this->resolveAbsolutePath($relativePath);
+
+        if (! $absolutePath) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        $safeName = basename($fileName ?: 'document.pdf');
+
+        return response()->download($absolutePath, $safeName, [
+            'Content-Type' => $mimeType ?: 'application/octet-stream',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
+
     private function previewPdf(Request $request, ?string $relativePath, ?string $fileName, ?string $mimeType)
     {
         if (empty($relativePath)) {
@@ -47,13 +87,7 @@ class DocumentPreviewController extends Controller
             abort(404, 'Dokumen bukan PDF.');
         }
 
-        $candidatePaths = [
-            storage_path('app/public/'.$relativePath),
-            public_path('storage/'.$relativePath),
-            public_path($relativePath),
-        ];
-
-        $absolutePath = collect($candidatePaths)->first(static fn ($path) => is_file($path));
+        $absolutePath = $this->resolveAbsolutePath($relativePath);
 
         if (! $absolutePath) {
             abort(404, 'File tidak ditemukan.');
@@ -78,4 +112,16 @@ class DocumentPreviewController extends Controller
             'Cache-Control' => 'private, max-age=0, must-revalidate',
         ]);
     }
+
+    private function resolveAbsolutePath(string $relativePath): ?string
+    {
+        $candidatePaths = [
+            storage_path('app/public/'.$relativePath),
+            public_path('storage/'.$relativePath),
+            public_path($relativePath),
+        ];
+
+        return collect($candidatePaths)->first(static fn ($path) => is_file($path));
+    }
 }
+

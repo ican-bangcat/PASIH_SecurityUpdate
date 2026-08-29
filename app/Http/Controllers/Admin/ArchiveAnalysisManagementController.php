@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Assignment;
 use App\Models\AssignmentAnalysisApproval;
 use App\Models\AssignmentDocument;
+use App\Models\AssignmentStatusLog;
 use App\Models\Instansi;
 use App\Models\Submission;
 use App\Models\SubmissionDocument;
@@ -89,7 +90,8 @@ class ArchiveAnalysisManagementController extends Controller
             ->value('id') ?? $request->user()->id;
 
         DB::transaction(function () use ($request, $validated, $completedDate, $instansiName, $submitterId): void {
-            $submission = Submission::query()->create([
+            $submission = new Submission();
+            $submission->forceFill([
                 'submitter_id' => $submitterId,
                 'nomor_surat' => $validated['nomor_surat'],
                 'perihal' => $validated['perihal'],
@@ -98,14 +100,20 @@ class ArchiveAnalysisManagementController extends Controller
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $submission->timestamps = false;
+            $submission->save();
 
-            $submission->statuses()->create([
+            $submissionStatus = $submission->statuses()->make([
                 'user_id' => $request->user()->id,
                 'status' => SubmissionStatus::Completed->value,
                 'note' => 'Arsip Data Lama diunggah langsung oleh Admin.',
+            ]);
+            $submissionStatus->forceFill([
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $submissionStatus->timestamps = false;
+            $submissionStatus->save();
 
             $perdaFile = $this->validateUploadedFile(
                 $request->file('peraturan_daerah'),
@@ -114,7 +122,8 @@ class ArchiveAnalysisManagementController extends Controller
             );
             $storedPerda = $this->storeFile($perdaFile, 'permohonan', $instansiName, 'Peraturan Daerah', $completedDate);
 
-            SubmissionDocument::query()->create([
+            $perdaDoc = new SubmissionDocument();
+            $perdaDoc->forceFill([
                 'submission_id' => $submission->id,
                 'uploaded_by' => $request->user()->id,
                 'document_type' => 'peraturan_daerah',
@@ -125,30 +134,59 @@ class ArchiveAnalysisManagementController extends Controller
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $perdaDoc->timestamps = false;
+            $perdaDoc->save();
 
-            $assignment = Assignment::query()->create([
-                'submission_id' => $submission->id,
-                'assigned_by_id' => $request->user()->id,
-                'instruction' => 'Data Hasil Analisis & Evaluasi Hukum Data Lama (Arsip)',
+            // Disable booted() auto-status-log so we can set timestamps manually
+            $assignment = Assignment::withoutEvents(function () use ($request, $submission, $completedDate) {
+                $model = new Assignment();
+                $model->forceFill([
+                    'submission_id' => $submission->id,
+                    'assigned_by_id' => $request->user()->id,
+                    'instruction' => 'Data Hasil Analisis & Evaluasi Hukum Data Lama (Arsip)',
+                    'created_at' => $completedDate,
+                    'updated_at' => $completedDate,
+                ]);
+                $model->timestamps = false;
+                $model->save();
+
+                return $model;
+            });
+
+            // Manually create the "assigned" + "completed" status logs with correct timestamps
+            $assignedLog = new AssignmentStatusLog();
+            $assignedLog->forceFill([
+                'assignment_id' => $assignment->id,
+                'user_id' => $request->user()->id,
+                'status' => AssignmentStatus::Assigned->value,
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $assignedLog->timestamps = false;
+            $assignedLog->save();
 
-            $statusLog = $assignment->statusLogs()->create([
+            $completedLog = new AssignmentStatusLog();
+            $completedLog->forceFill([
+                'assignment_id' => $assignment->id,
                 'user_id' => $request->user()->id,
                 'status' => AssignmentStatus::Completed->value,
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $completedLog->timestamps = false;
+            $completedLog->save();
 
-            AssignmentAnalysisApproval::query()->create([
+            $approval = new AssignmentAnalysisApproval();
+            $approval->forceFill([
                 'assignment_id' => $assignment->id,
                 'assigned_by_id' => $request->user()->id,
-                'assignment_statuses_id' => $statusLog->id,
+                'assignment_statuses_id' => $completedLog->id,
                 'note' => 'Arsip data lama disetujui langsung oleh Admin',
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $approval->timestamps = false;
+            $approval->save();
 
             $analisisFile = $this->validateUploadedFile(
                 $request->file('hasil_analisis'),
@@ -157,7 +195,8 @@ class ArchiveAnalysisManagementController extends Controller
             );
             $storedAnalisis = $this->storeFile($analisisFile, 'penugasan', $instansiName, 'Hasil Analisis', $completedDate);
 
-            AssignmentDocument::query()->create([
+            $analysisDoc = new AssignmentDocument();
+            $analysisDoc->forceFill([
                 'assignment_id' => $assignment->id,
                 'uploaded_by' => $request->user()->id,
                 'document_type' => 'hasil_analisis',
@@ -171,6 +210,8 @@ class ArchiveAnalysisManagementController extends Controller
                 'created_at' => $completedDate,
                 'updated_at' => $completedDate,
             ]);
+            $analysisDoc->timestamps = false;
+            $analysisDoc->save();
         });
 
         return redirect()->route('admin.archive-analysis.index')->with('success', 'Arsip Data Lama Hasil Analisis berhasil ditambahkan dan langsung terbit di halaman publik.');

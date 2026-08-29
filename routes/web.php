@@ -51,6 +51,12 @@ Route::get('/publik/documents/submissions/{document}/preview', [DocumentPreviewC
 Route::get('/publik/documents/assignments/{document}/preview', [DocumentPreviewController::class, 'previewAssignment'])
     ->whereNumber('document')
     ->name('public.documents.preview.assignment');
+Route::get('/publik/documents/submissions/{document}/download', [DocumentPreviewController::class, 'downloadSubmission'])
+    ->whereNumber('document')
+    ->name('public.documents.download.submission');
+Route::get('/publik/documents/assignments/{document}/download', [DocumentPreviewController::class, 'downloadAssignment'])
+    ->whereNumber('document')
+    ->name('public.documents.download.assignment');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -78,6 +84,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/documents/guides/{document}/preview', [DocumentPreviewController::class, 'previewGuide'])
         ->whereNumber('document')
         ->name('documents.preview.guide');
+    Route::get('/documents/submissions/{document}/download', [DocumentPreviewController::class, 'downloadSubmission'])
+        ->whereNumber('document')
+        ->name('documents.download.submission');
+    Route::get('/documents/assignments/{document}/download', [DocumentPreviewController::class, 'downloadAssignment'])
+        ->whereNumber('document')
+        ->name('documents.download.assignment');
+    Route::get('/documents/suratbalasan/{document}/download', [DocumentPreviewController::class, 'downloadSuratBalasan'])
+        ->whereNumber('document')
+        ->name('documents.download.suratbalasan');
+    Route::get('/documents/guides/{document}/download', [DocumentPreviewController::class, 'downloadGuide'])
+        ->whereNumber('document')
+        ->name('documents.download.guide');
 
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/accounts', [AccountManagementController::class, 'index'])->name('admin.accounts.index');

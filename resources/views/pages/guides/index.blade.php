@@ -20,6 +20,7 @@
         $isPdf = str_ends_with($fileName, '.pdf') || str_ends_with($filePath, '.pdf');
         $previewUrl = $isPdf ? route('documents.preview.guide', $latestGuide) : null;
         $previewDataUrl = $isPdf ? route('documents.preview.guide', ['document' => $latestGuide, 'base64' => 1]) : null;
+        $downloadUrl = route('documents.download.guide', $latestGuide);
       @endphp
       <div class="rounded-xl bg-white ring-1 ring-slate-200 p-5 md:p-6">
         <h2 class="text-xl font-bold text-slate-800">Dokumen Buku Panduan</h2>
@@ -30,13 +31,20 @@
             <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-50">
               <div class="min-w-0 flex-1">
                 <div class="truncate text-sm text-slate-800" title="{{ $latestGuide->file_name }}"><span>{{ $latestGuide->file_name }}</span><span class="text-slate-500" data-pdf-page-info></span></div>
-                <div class="text-xs text-slate-500">Diunggah : {{ optional($latestGuide->created_at)->format('d-m-Y H:i') ?: '-' }} oleh {{ $latestGuide->uploader?->name ?? 'Admin' }}</div>
               </div>
-              @if($fileUrl)
-                <a href="{{ ($isPdf && $previewUrl) ? $previewUrl : $fileUrl }}" target="_blank" class="inline-flex shrink-0 items-center h-8 px-3 rounded-lg bg-white text-slate-700 text-xs font-semibold ring-1 ring-slate-300 hover:bg-slate-100">
-                  Lihat
-                </a>
-              @endif
+              <div class="flex items-center gap-2 shrink-0">
+                @if($fileUrl)
+                  <a href="{{ ($isPdf && $previewUrl) ? $previewUrl : $fileUrl }}" target="_blank" class="inline-flex items-center h-8 px-3 rounded-lg bg-white text-slate-700 text-xs font-semibold ring-1 ring-slate-300 hover:bg-slate-100">
+                    Lihat
+                  </a>
+                  <a href="{{ $downloadUrl }}" class="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Unduh
+                  </a>
+                @endif
+              </div>
             </div>
 
             @if($fileUrl && $isPdf && $previewUrl)

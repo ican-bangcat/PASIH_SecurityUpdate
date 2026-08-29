@@ -176,6 +176,7 @@
                         $perdaPreviewUrl = $perdaIsPdf ? route('public.documents.preview.submission', $perdaDoc) : null;
                         $perdaPreviewDataUrl = $perdaIsPdf ? route('public.documents.preview.submission', ['document' => $perdaDoc, 'base64' => 1]) : null;
                         $perdaOpenUrl = $perdaIsPdf ? $perdaPreviewUrl : $perdaFileUrl;
+                        $perdaDownloadUrl = route('public.documents.download.submission', $perdaDoc);
                     @endphp
                     <div class="flex items-center justify-between gap-3 px-4 py-3.5 bg-slate-50 border-b border-slate-200/80">
                         <div class="min-w-0 flex-1 flex items-center gap-3">
@@ -192,12 +193,20 @@
                                 <div class="text-xs text-slate-400">Diunggah: {{ optional($perdaDoc->created_at)->format('d M Y, H:i') ?: '-' }}</div>
                             </div>
                         </div>
-                        <a href="{{ $perdaOpenUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-xs transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                            Buka di Tab Baru
-                        </a>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <a href="{{ $perdaOpenUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-xs transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Buka di Tab Baru
+                            </a>
+                            <a href="{{ $perdaDownloadUrl }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 shadow-xs transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Unduh PDF
+                            </a>
+                        </div>
                     </div>
                     @if($perdaIsPdf)
                         <div class="bg-slate-100 p-3 md:p-4">
@@ -246,6 +255,7 @@
                         $analysisPreviewUrl = $analysisIsPdf ? route('public.documents.preview.assignment', $analysisDoc) : null;
                         $analysisPreviewDataUrl = $analysisIsPdf ? route('public.documents.preview.assignment', ['document' => $analysisDoc, 'base64' => 1]) : null;
                         $analysisOpenUrl = $analysisIsPdf ? $analysisPreviewUrl : $analysisFileUrl;
+                        $analysisDownloadUrl = route('public.documents.download.assignment', $analysisDoc);
                     @endphp
                     <div class="flex items-center justify-between gap-3 px-4 py-3.5 bg-slate-50 border-b border-slate-200/80">
                         <div class="min-w-0 flex-1 flex items-center gap-3">
@@ -262,12 +272,20 @@
                                 <div class="text-xs text-slate-400">Diunggah: {{ optional($analysisDoc->created_at)->format('d M Y, H:i') ?: '-' }}</div>
                             </div>
                         </div>
-                        <a href="{{ $analysisOpenUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 shadow-xs transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                            Buka di Tab Baru
-                        </a>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <a href="{{ $analysisOpenUrl }}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 shadow-xs transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Buka di Tab Baru
+                            </a>
+                            <a href="{{ $analysisDownloadUrl }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 shadow-xs transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Unduh PDF
+                            </a>
+                        </div>
                     </div>
                     @if($analysisIsPdf)
                         <div class="bg-slate-100 p-3 md:p-4">
