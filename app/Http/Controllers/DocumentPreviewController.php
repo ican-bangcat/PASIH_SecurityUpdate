@@ -62,10 +62,19 @@ class DocumentPreviewController extends Controller
             abort(404, 'File tidak ditemukan.');
         }
 
-        $safeName = basename($fileName ?: 'document.pdf');
+        $extension = pathinfo($absolutePath, PATHINFO_EXTENSION) ?: 'pdf';
+        $safeName = basename($fileName ?: 'document');
+        if (! str_ends_with(strtolower($safeName), '.'.strtolower($extension))) {
+            $safeName .= '.'.$extension;
+        }
+
+        $contentType = $mimeType;
+        if (empty($contentType) || strtolower($extension) === 'pdf') {
+            $contentType = 'application/pdf';
+        }
 
         return response()->download($absolutePath, $safeName, [
-            'Content-Type' => $mimeType ?: 'application/octet-stream',
+            'Content-Type' => $contentType,
             'X-Content-Type-Options' => 'nosniff',
         ]);
     }
@@ -93,7 +102,10 @@ class DocumentPreviewController extends Controller
             abort(404, 'File tidak ditemukan.');
         }
 
-        $safeName = basename($fileName ?: 'document.pdf');
+        $safeName = basename($fileName ?: 'document');
+        if (! str_ends_with(strtolower($safeName), '.pdf')) {
+            $safeName .= '.pdf';
+        }
         $fileBytes = file_get_contents($absolutePath);
 
         if ($request->boolean('base64')) {
