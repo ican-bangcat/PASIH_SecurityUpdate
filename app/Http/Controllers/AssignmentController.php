@@ -258,7 +258,10 @@ class AssignmentController extends Controller
     public function assignPicForm(Request $request, Assignment $assignment)
     {
         abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
-        abort_unless($assignment->status->value === 'assigned', 422);
+
+        if (! in_array($assignment->status->value, ['assigned', 'in_progress'], true)) {
+            return redirect()->route('assignments.index')->with('error', 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.');
+        }
 
         $assignment->load(['submission.submitter.instansi']);
 
@@ -276,7 +279,7 @@ class AssignmentController extends Controller
     public function assignPicStore(Request $request, Assignment $assignment)
     {
         abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
-        abort_unless($assignment->status->value === 'assigned', 422);
+        abort_unless(in_array($assignment->status->value, ['assigned', 'in_progress'], true), 422);
 
         try {
             $validated = $request->validate([

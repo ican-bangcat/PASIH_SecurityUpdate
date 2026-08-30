@@ -30,7 +30,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <label class="block text-sm font-medium text-slate-700">
             Judul Peraturan Daerah
-            <input type="text" disabled value="{{ $assignment->submission->perda_title ?: '-' }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
+            <input type="text" disabled value="{{ $assignment->submission?->perda_title ?: '-' }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
           </label>
           <label class="block text-sm font-medium text-slate-700">
             Penanggung Jawab Analisis

@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('vendor.pagination.pasih');
         Paginator::defaultSimpleView('vendor.pagination.pasih');
 
+        if (str_starts_with((string) config('app.url'), 'https://') || app()->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         if (! Schema::hasTable('roles')) {
             return;
         }

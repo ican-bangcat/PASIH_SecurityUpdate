@@ -30,15 +30,15 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label class="block text-sm font-medium text-slate-700">Judul Peraturan daerah
-            <input type="text" disabled value="{{ $assignment->submission->perda_title }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
+            <input type="text" disabled value="{{ $assignment->submission?->perda_title ?: '-' }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
           </label>
 
             <label class="block text-sm font-medium text-slate-700">Nomor Surat
-            <input type="text" disabled value="{{ $assignment->submission->nomor_surat }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
+            <input type="text" disabled value="{{ $assignment->submission?->nomor_surat ?: '-' }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
           </label>
 
           <label class="block text-sm font-medium text-slate-700">Penugasan Oleh
-            <input type="text" disabled value="{{ $assignment->submission->divisionOperator?->name ?? 'P3H' }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
+            <input type="text" disabled value="{{ $assignment->submission?->divisionOperator?->name ?? 'P3H' }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
           </label>
 
           <label class="block text-sm font-medium text-slate-700">Tanggal Penugasan
