@@ -516,87 +516,17 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('showAssignPicForm');
-    const alertEl = document.getElementById('showAssignPicAlert');
     const btn = document.getElementById('showAssignPicSubmitBtn');
     const btnText = document.getElementById('showAssignPicSubmitText');
     if (!form) return;
 
-    function showAlert(message, isError) {
-      if (!alertEl) return;
-      alertEl.textContent = message;
-      alertEl.className = isError
-        ? 'm-5 rounded-xl px-4 py-3 text-sm font-medium bg-rose-50 text-rose-700 ring-1 ring-rose-200'
-        : 'm-5 rounded-xl px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
-      alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function hideAlert() {
-      if (alertEl) {
-        alertEl.textContent = '';
-        alertEl.className = 'hidden m-5 rounded-xl px-4 py-3 text-sm font-medium';
+    form.addEventListener('submit', function() {
+      if (!form.checkValidity()) return;
+      if (btn && btnText) {
+        btn.disabled = true;
+        btnText.textContent = 'Menyimpan...';
+        btn.classList.add('opacity-75', 'cursor-not-allowed');
       }
-    }
-
-    function setLoading(loading) {
-      if (!btn || !btnText) return;
-      btn.disabled = loading;
-      btnText.textContent = loading ? 'Menyimpan...' : 'Simpan Penanggung Jawab';
-      btn.classList.toggle('opacity-60', loading);
-      btn.classList.toggle('cursor-not-allowed', loading);
-    }
-
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      hideAlert();
-      setLoading(true);
-
-      const formData = new FormData(form);
-      const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
-
-      const fileInput = form.querySelector('input[type="file"][name="surat_balasan_kemenkum"]');
-      if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
-        formData.delete('surat_balasan_kemenkum');
-      }
-
-      fetch(form.action, {
-        method: 'POST',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-        },
-        body: formData,
-      })
-      .then(async function(response) {
-        let data = null;
-        const contentType = response.headers.get('content-type') || '';
-        
-        if (contentType.includes('application/json')) {
-          data = await response.json();
-        } else {
-          throw new Error('Respons server tidak valid (kemungkinan diblokir WAF atau sesi berakhir). Status: ' + response.status);
-        }
-
-        if (!response.ok || !data || data.success !== true) {
-          let errorMsg = (data && data.message) ? data.message : 'Terjadi kesalahan saat menyimpan data.';
-          if (data && data.errors) {
-            const errorList = Object.values(data.errors).flat();
-            if (errorList.length > 0) {
-              errorMsg = errorList.join(' ');
-            }
-          }
-          throw new Error(errorMsg);
-        }
-
-        showAlert(data.message || 'Penanggung jawab analisis berhasil ditetapkan', false);
-        setTimeout(function() {
-          window.location.href = data.redirect || window.location.href;
-        }, 800);
-      })
-      .catch(function(err) {
-        showAlert(err.message || 'Gagal mengirim data. Silakan coba lagi.', true);
-        setLoading(false);
-      });
     });
   });
 </script>

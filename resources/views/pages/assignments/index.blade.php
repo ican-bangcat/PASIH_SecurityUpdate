@@ -334,59 +334,10 @@
         if (!form) return;
 
         form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          hideAssignPicAlert();
-          setAssignPicLoading(true);
-
-          const formData = new FormData(form);
-          const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
-
-          // Bersihkan file input jika tidak ada file yang dipilih agar tidak memicu deteksi anomali multipart pada WAF
-          const fileInput = form.querySelector('input[type="file"][name="surat_balasan_kemenkum"]');
-          if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
-            formData.delete('surat_balasan_kemenkum');
+          if (!form.checkValidity()) {
+            return;
           }
-
-          fetch(form.action, {
-            method: 'POST',
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest',
-              'Accept': 'application/json',
-              'X-CSRF-TOKEN': csrfToken,
-            },
-            body: formData,
-          })
-          .then(async function(response) {
-            let data = null;
-            const contentType = response.headers.get('content-type') || '';
-            
-            if (contentType.includes('application/json')) {
-              data = await response.json();
-            } else {
-              // Jika respons bukan JSON (kemungkinan WAF redirect atau HTML error)
-              throw new Error('Respons server tidak valid (kemungkinan diblokir WAF atau sesi berakhir). Status: ' + response.status);
-            }
-
-            if (!response.ok || !data || data.success !== true) {
-              let errorMsg = (data && data.message) ? data.message : 'Terjadi kesalahan saat menyimpan data.';
-              if (data && data.errors) {
-                const errorList = Object.values(data.errors).flat();
-                if (errorList.length > 0) {
-                  errorMsg = errorList.join(' ');
-                }
-              }
-              throw new Error(errorMsg);
-            }
-
-            showAssignPicAlert(data.message || 'Penanggung jawab analisis berhasil ditetapkan', false);
-            setTimeout(function() {
-              window.location.href = data.redirect || '{{ route("assignments.index") }}';
-            }, 800);
-          })
-          .catch(function(err) {
-            showAssignPicAlert(err.message || 'Gagal mengirim data. Silakan coba lagi.', true);
-            setAssignPicLoading(false);
-          });
+          setAssignPicLoading(true);
         });
       });
     </script>
