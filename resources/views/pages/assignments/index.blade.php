@@ -216,6 +216,8 @@
           </button>
         </div>
 
+        <div id="assignPicAlert" class="hidden mx-6 mt-4 rounded-lg px-4 py-3 text-sm font-medium"></div>
+
         <form id="assignPicFormElement" method="POST" action="" enctype="multipart/form-data" class="p-6 space-y-4">
           @csrf
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -259,11 +261,11 @@
             <button type="button" onclick="closeAssignPicModal()" class="h-10 px-4 rounded-md border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors">
               Batal
             </button>
-            <button type="submit" class="inline-flex items-center gap-2 h-10 px-5 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
+            <button type="submit" id="assignPicSubmitBtn" class="inline-flex items-center gap-2 h-10 px-5 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
               </svg>
-              Simpan
+              <span id="assignPicSubmitText">Simpan</span>
             </button>
           </div>
         </form>
@@ -280,6 +282,8 @@
         document.getElementById('modalInstansiName').value = instansiName || '-';
         document.getElementById('modalAnalystId').value = analystId || '';
         document.getElementById('modalDeadlineAt').value = deadlineAt || '';
+        hideAssignPicAlert();
+        resetAssignPicSubmitBtn();
         modal.classList.remove('hidden');
       }
 
@@ -287,6 +291,95 @@
         const modal = document.getElementById('assignPicModal');
         if (modal) modal.classList.add('hidden');
       }
+
+      function showAssignPicAlert(message, isError) {
+        const alert = document.getElementById('assignPicAlert');
+        if (!alert) return;
+        alert.textContent = message;
+        alert.className = isError
+          ? 'mx-6 mt-4 rounded-lg px-4 py-3 text-sm font-medium bg-rose-50 text-rose-700 ring-1 ring-rose-200'
+          : 'mx-6 mt-4 rounded-lg px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
+      }
+
+      function hideAssignPicAlert() {
+        const alert = document.getElementById('assignPicAlert');
+        if (alert) {
+          alert.textContent = '';
+          alert.className = 'hidden mx-6 mt-4 rounded-lg px-4 py-3 text-sm font-medium';
+        }
+      }
+
+      function setAssignPicLoading(loading) {
+        const btn = document.getElementById('assignPicSubmitBtn');
+        const text = document.getElementById('assignPicSubmitText');
+        if (!btn || !text) return;
+        btn.disabled = loading;
+        text.textContent = loading ? 'Menyimpan...' : 'Simpan';
+        btn.classList.toggle('opacity-60', loading);
+        btn.classList.toggle('cursor-not-allowed', loading);
+      }
+
+      function resetAssignPicSubmitBtn() {
+        setAssignPicLoading(false);
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('assignPicFormElement');
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          hideAssignPicAlert();
+          setAssignPicLoading(true);
+
+          const formData = new FormData(form);
+          const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+          fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'Accept': 'application/json',
+              'X-CSRF-TOKEN': csrfToken,
+            },
+            body: formData,
+          })
+          .then(function(response) {
+            return response.json().then(function(data) {
+              return { status: response.status, ok: response.ok, data: data };
+            }).catch(function() {
+              // Response bukan JSON — kemungkinan WAF memblokir
+              if (!response.ok) {
+                return { status: response.status, ok: false, data: { success: false, message: 'Server mengembalikan respons tidak valid (kemungkinan diblokir WAF). Status: ' + response.status } };
+              }
+              // Sukses tapi bukan JSON — mungkin redirect HTML
+              return { status: response.status, ok: true, data: { success: true, message: 'Penanggung jawab analisis berhasil ditetapkan', redirect: '{{ route("assignments.index") }}' } };
+            });
+          })
+          .then(function(result) {
+            if (result.data.success) {
+              showAssignPicAlert(result.data.message || 'Berhasil!', false);
+              setTimeout(function() {
+                window.location.href = result.data.redirect || '{{ route("assignments.index") }}';
+              }, 800);
+            } else {
+              let errorMsg = result.data.message || 'Terjadi kesalahan.';
+              if (result.data.errors) {
+                const errorList = Object.values(result.data.errors).flat();
+                if (errorList.length > 0) {
+                  errorMsg = errorList.join(' ');
+                }
+              }
+              showAssignPicAlert(errorMsg, true);
+              setAssignPicLoading(false);
+            }
+          })
+          .catch(function(err) {
+            showAssignPicAlert('Gagal mengirim data. Periksa koneksi internet Anda atau coba lagi. (' + (err.message || 'Network error') + ')', true);
+            setAssignPicLoading(false);
+          });
+        });
+      });
     </script>
   @endif
 @endsection

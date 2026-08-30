@@ -20,11 +20,13 @@
       </div>
     @endif
 
+    <div id="assignPicStandaloneAlert" class="hidden rounded-xl px-4 py-3 text-sm font-medium"></div>
+
     <div class="rounded-xl bg-white ring-1 ring-slate-200 overflow-hidden">
       <div class="px-4 py-3 border-b border-slate-200">
         <h2 class="text-[18px] font-bold text-slate-800">Penetapan Penanggung Jawab Analisis Peraturan Daerah</h2>
       </div>
-      <form method="POST" action="{{ route('assignments.assign-pic.store', $assignment) }}" enctype="multipart/form-data" class="p-5 space-y-5">
+      <form id="assignPicStandaloneForm" method="POST" action="{{ route('assignments.assign-pic.store', $assignment) }}" enctype="multipart/form-data" class="p-5 space-y-5">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <label class="block text-sm font-medium text-slate-700">
@@ -49,7 +51,7 @@
 
         <label class="block text-sm font-medium text-slate-700">
           Deadline <span class="text-red-500">*</span>
-          <input type="date" name="deadline_at" min="{{ now()->toDateString() }}" required value="{{ old('deadline_at', optional($assignment->deadline_at)->format('Y-m-d')) }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm">
+          <input type="date" name="deadline_at" min="{{ now()->toDateString() }}" required value="{{ old('deadline_at', optional($assignment->deadline_at)?->format('Y-m-d')) }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm">
         </label>
 
         <label class="block text-sm font-medium text-slate-700">
@@ -67,14 +69,102 @@
         </label>
 
         <div class="pt-1">
-          <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
+          <button type="submit" id="assignPicStandaloneBtn" class="inline-flex items-center gap-2 h-10 px-4 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
           </svg>
-            Simpan
+            <span id="assignPicStandaloneBtnText">Simpan</span>
           </button>
         </div>
       </form>
     </div>
   </div>
 @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('assignPicStandaloneForm');
+    const alertEl = document.getElementById('assignPicStandaloneAlert');
+    const btn = document.getElementById('assignPicStandaloneBtn');
+    const btnText = document.getElementById('assignPicStandaloneBtnText');
+    if (!form) return;
+
+    function showAlert(message, isError) {
+      if (!alertEl) return;
+      alertEl.textContent = message;
+      alertEl.className = isError
+        ? 'rounded-xl px-4 py-3 text-sm font-medium bg-rose-50 text-rose-700 ring-1 ring-rose-200'
+        : 'rounded-xl px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
+      alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideAlert() {
+      if (alertEl) {
+        alertEl.textContent = '';
+        alertEl.className = 'hidden rounded-xl px-4 py-3 text-sm font-medium';
+      }
+    }
+
+    function setLoading(loading) {
+      if (!btn || !btnText) return;
+      btn.disabled = loading;
+      btnText.textContent = loading ? 'Menyimpan...' : 'Simpan';
+      btn.classList.toggle('opacity-60', loading);
+      btn.classList.toggle('cursor-not-allowed', loading);
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      hideAlert();
+      setLoading(true);
+
+      const formData = new FormData(form);
+      const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+        },
+        body: formData,
+      })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return { status: response.status, ok: response.ok, data: data };
+        }).catch(function() {
+          if (!response.ok) {
+            return { status: response.status, ok: false, data: { success: false, message: 'Server mengembalikan respons tidak valid (kemungkinan diblokir WAF). Status: ' + response.status } };
+          }
+          return { status: response.status, ok: true, data: { success: true, message: 'Penanggung jawab analisis berhasil ditetapkan', redirect: '{{ route("assignments.index") }}' } };
+        });
+      })
+      .then(function(result) {
+        if (result.data.success) {
+          showAlert(result.data.message || 'Berhasil!', false);
+          setTimeout(function() {
+            window.location.href = result.data.redirect || '{{ route("assignments.index") }}';
+          }, 800);
+        } else {
+          let errorMsg = result.data.message || 'Terjadi kesalahan.';
+          if (result.data.errors) {
+            const errorList = Object.values(result.data.errors).flat();
+            if (errorList.length > 0) {
+              errorMsg = errorList.join(' ');
+            }
+          }
+          showAlert(errorMsg, true);
+          setLoading(false);
+        }
+      })
+      .catch(function(err) {
+        showAlert('Gagal mengirim data. Periksa koneksi internet Anda atau coba lagi. (' + (err.message || 'Network error') + ')', true);
+        setLoading(false);
+      });
+    });
+  });
+</script>
+@endpush
+

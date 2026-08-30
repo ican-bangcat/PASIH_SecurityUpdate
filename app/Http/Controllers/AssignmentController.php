@@ -300,11 +300,21 @@ class AssignmentController extends Controller
 
     public function assignPicStore(Request $request, Assignment $assignment)
     {
+        $isAjax = $request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest';
+
         if ($request->user()?->role?->value !== 'ketua_tim_analisis') {
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'Hanya Ketua Tim Analisis yang berwenang menentukan penanggung jawab analisis.'], 403);
+            }
+
             return redirect()->route('assignments.index')->with('error', 'Hanya Ketua Tim Analisis yang berwenang menentukan penanggung jawab analisis.');
         }
 
         if (! in_array($assignment->status->value, ['assigned', 'in_progress'], true)) {
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.'], 422);
+            }
+
             return redirect()->route('assignments.index')->with('error', 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.');
         }
 
@@ -317,6 +327,10 @@ class AssignmentController extends Controller
 
             $analyst = User::query()->findOrFail($validated['analyst_id']);
             if ($analyst->role?->value !== 'analis_hukum') {
+                if ($isAjax) {
+                    return response()->json(['success' => false, 'message' => 'Pengguna yang dipilih bukan Analis Hukum.', 'errors' => ['analyst_id' => ['Pengguna yang dipilih bukan Analis Hukum.']]], 422);
+                }
+
                 return back()->withInput()->withErrors(['analyst_id' => 'Pengguna yang dipilih bukan Analis Hukum.']);
             }
 
@@ -374,13 +388,36 @@ class AssignmentController extends Controller
                 );
             }
 
+            if ($isAjax) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Penanggung jawab analisis berhasil ditetapkan',
+                    'redirect' => route('assignments.index'),
+                ]);
+            }
+
             return redirect()->route('assignments.index')->with('success', 'Penanggung jawab analisis berhasil ditetapkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($isAjax) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal. Periksa kembali data yang diisi.',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
             throw $e;
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Error pada assignPicStore: '.$e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
+
+            if ($isAjax) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memproses penugasan. Silakan coba lagi.',
+                ], 500);
+            }
 
             return back()->withInput()->withErrors([
                 'error' => 'Gagal memproses penugasan: '.$e->getMessage(),
