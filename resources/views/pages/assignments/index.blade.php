@@ -2,6 +2,12 @@
 @section('title', 'Penugasan')
 
 @section('content')
+  @php
+    $userRole = auth()->user()?->role?->value;
+    $isKetuaTim = $userRole === 'ketua_tim_analisis';
+    $isKadiv = $userRole === 'kepala_divisi_p3h';
+    $isKakanwil = $userRole === 'kakanwil';
+  @endphp
   <div class="space-y-5">
     <div>
       <h1 class="pasih-page-title">Penugasan</h1>
