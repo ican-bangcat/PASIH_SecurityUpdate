@@ -278,70 +278,82 @@ class AssignmentController extends Controller
         abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
         abort_unless($assignment->status->value === 'assigned', 422);
 
-        $validated = $request->validate([
-            'analyst_id' => ['required', 'exists:users,id'],
-            'deadline_at' => ['nullable', 'date'],
-            'surat_balasan_kemenkum' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx'],
-        ]);
-
-        $analyst = User::query()->findOrFail($validated['analyst_id']);
-        abort_unless($analyst->role->value === 'analis_hukum', 422);
-
-        $stored = null;
-        if ($request->hasFile('surat_balasan_kemenkum')) {
-            $file = $this->validateUploadedFile(
-                $request->file('surat_balasan_kemenkum'),
-                'surat_balasan_kemenkum',
-                'Upload surat balasan Kemenkum gagal. Pastikan ukuran file maksimal 10 MB dan berformat PDF/DOC/DOCX.'
-            );
-            $stored = $this->storeAssignmentFile(
-                $file,
-                $assignment->submission?->submitter?->instansi?->nama_instansi ?? $assignment->submission?->submitter?->name ?? 'Instansi',
-                'Surat Balasan Kemenkum'
-            );
-        }
-
-        DB::transaction(function () use ($request, $assignment, $analyst, $validated, $stored): void {
-            $assignment->transitionStatus('in_progress', $request->user()->id);
-
-            AssignmentPicUpdate::query()->create([
-                'assignment_id' => $assignment->id,
-                'pic_assigned_by_id' => $request->user()->id,
-                'analyst_id' => $analyst->id,
-                'deadline_at' => $validated['deadline_at'] ?? null,
+        try {
+            $validated = $request->validate([
+                'analyst_id' => ['required', 'exists:users,id'],
+                'deadline_at' => ['nullable', 'date'],
+                'surat_balasan_kemenkum' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx'],
             ]);
 
-            if ($stored !== null) {
-                AssignmentKemenkumReplyDocument::query()->updateOrCreate(
-                    ['assignment_id' => $assignment->id],
-                    [
-                        'submission_id' => $assignment->submission_id,
-                        'uploaded_by' => $request->user()->id,
-                        'file_name' => $stored['file_name'],
-                        'file_path' => $stored['file_path'],
-                        'mime_type' => $stored['mime_type'],
-                        'file_size' => $stored['file_size'],
-                        'kategori_surat' => 'surat_tugas',
-                    ]
+            $analyst = User::query()->findOrFail($validated['analyst_id']);
+            abort_unless($analyst->role->value === 'analis_hukum', 422);
+
+            $stored = null;
+            if ($request->hasFile('surat_balasan_kemenkum')) {
+                $file = $this->validateUploadedFile(
+                    $request->file('surat_balasan_kemenkum'),
+                    'surat_balasan_kemenkum',
+                    'Upload surat balasan Kemenkum gagal. Pastikan ukuran file maksimal 10 MB dan berformat PDF/DOC/DOCX.'
+                );
+                $stored = $this->storeAssignmentFile(
+                    $file,
+                    $assignment->submission?->submitter?->instansi?->nama_instansi ?? $assignment->submission?->submitter?->name ?? 'Instansi',
+                    'Surat Balasan Kemenkum'
                 );
             }
-        });
 
-        $this->workflowNotificationService->notifyAssignmentPicAssigned(
-            $assignment,
-            $request->user(),
-            $analyst,
-            $validated['deadline_at'] ?? null
-        );
+            DB::transaction(function () use ($request, $assignment, $analyst, $validated, $stored): void {
+                $assignment->transitionStatus('in_progress', $request->user()->id);
 
-        if ($stored !== null) {
-            $this->workflowNotificationService->notifySubmitterReplyLetterAvailable(
+                AssignmentPicUpdate::query()->create([
+                    'assignment_id' => $assignment->id,
+                    'pic_assigned_by_id' => $request->user()->id,
+                    'analyst_id' => $analyst->id,
+                    'deadline_at' => $validated['deadline_at'] ?? null,
+                ]);
+
+                if ($stored !== null) {
+                    AssignmentKemenkumReplyDocument::query()->updateOrCreate(
+                        ['assignment_id' => $assignment->id],
+                        [
+                            'submission_id' => $assignment->submission_id,
+                            'uploaded_by' => $request->user()->id,
+                            'file_name' => $stored['file_name'],
+                            'file_path' => $stored['file_path'],
+                            'mime_type' => $stored['mime_type'],
+                            'file_size' => $stored['file_size'],
+                            'kategori_surat' => 'surat_tugas',
+                        ]
+                    );
+                }
+            });
+
+            $this->workflowNotificationService->notifyAssignmentPicAssigned(
                 $assignment,
-                $request->user()
+                $request->user(),
+                $analyst,
+                $validated['deadline_at'] ?? null
             );
-        }
 
-        return redirect()->route('assignments.index')->with('success', 'Penanggung jawab analisis berhasil ditetapkan');
+            if ($stored !== null) {
+                $this->workflowNotificationService->notifySubmitterReplyLetterAvailable(
+                    $assignment,
+                    $request->user()
+                );
+            }
+
+            return redirect()->route('assignments.index')->with('success', 'Penanggung jawab analisis berhasil ditetapkan');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error pada assignPicStore: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->withInput()->withErrors([
+                'error' => 'Gagal memproses penugasan: '.$e->getMessage(),
+            ]);
+        }
     }
 
     public function uploadAnalysisForm(Request $request, Assignment $assignment)

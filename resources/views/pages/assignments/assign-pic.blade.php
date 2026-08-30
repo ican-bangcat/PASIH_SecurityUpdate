@@ -14,6 +14,12 @@
       </p>
     </div>
 
+    @if($errors->any())
+      <div class="rounded-xl bg-rose-50 text-rose-700 ring-1 ring-rose-200 px-4 py-3 text-sm font-medium">
+        {{ $errors->first() }}
+      </div>
+    @endif
+
     <div class="rounded-xl bg-white ring-1 ring-slate-200 overflow-hidden">
       <div class="px-4 py-3 border-b border-slate-200">
         <h2 class="text-[18px] font-bold text-slate-800">Penetapan Penanggung Jawab Analisis Peraturan Daerah</h2>
