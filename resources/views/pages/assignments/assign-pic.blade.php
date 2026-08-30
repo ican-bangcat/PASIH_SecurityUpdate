@@ -122,6 +122,11 @@
       const formData = new FormData(form);
       const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
 
+      const fileInput = form.querySelector('input[type="file"][name="surat_balasan_kemenkum"]');
+      if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
+        formData.delete('surat_balasan_kemenkum');
+      }
+
       fetch(form.action, {
         method: 'POST',
         headers: {
@@ -131,36 +136,34 @@
         },
         body: formData,
       })
-      .then(function(response) {
-        return response.json().then(function(data) {
-          return { status: response.status, ok: response.ok, data: data };
-        }).catch(function() {
-          if (!response.ok) {
-            return { status: response.status, ok: false, data: { success: false, message: 'Server mengembalikan respons tidak valid (kemungkinan diblokir WAF). Status: ' + response.status } };
-          }
-          return { status: response.status, ok: true, data: { success: true, message: 'Penanggung jawab analisis berhasil ditetapkan', redirect: '{{ route("assignments.index") }}' } };
-        });
-      })
-      .then(function(result) {
-        if (result.data.success) {
-          showAlert(result.data.message || 'Berhasil!', false);
-          setTimeout(function() {
-            window.location.href = result.data.redirect || '{{ route("assignments.index") }}';
-          }, 800);
+      .then(async function(response) {
+        let data = null;
+        const contentType = response.headers.get('content-type') || '';
+        
+        if (contentType.includes('application/json')) {
+          data = await response.json();
         } else {
-          let errorMsg = result.data.message || 'Terjadi kesalahan.';
-          if (result.data.errors) {
-            const errorList = Object.values(result.data.errors).flat();
+          throw new Error('Respons server tidak valid (kemungkinan diblokir WAF atau sesi berakhir). Status: ' + response.status);
+        }
+
+        if (!response.ok || !data || data.success !== true) {
+          let errorMsg = (data && data.message) ? data.message : 'Terjadi kesalahan saat menyimpan data.';
+          if (data && data.errors) {
+            const errorList = Object.values(data.errors).flat();
             if (errorList.length > 0) {
               errorMsg = errorList.join(' ');
             }
           }
-          showAlert(errorMsg, true);
-          setLoading(false);
+          throw new Error(errorMsg);
         }
+
+        showAlert(data.message || 'Penanggung jawab analisis berhasil ditetapkan', false);
+        setTimeout(function() {
+          window.location.href = data.redirect || '{{ route("assignments.index") }}';
+        }, 800);
       })
       .catch(function(err) {
-        showAlert('Gagal mengirim data. Periksa koneksi internet Anda atau coba lagi. (' + (err.message || 'Network error') + ')', true);
+        showAlert(err.message || 'Gagal mengirim data. Silakan coba lagi.', true);
         setLoading(false);
       });
     });

@@ -182,7 +182,9 @@
           </div>
         @endif
 
-        <form method="POST" action="{{ route('assignments.assign-pic.store', $assignment) }}" enctype="multipart/form-data" class="p-5 space-y-4">
+        <div id="showAssignPicAlert" class="hidden m-5 rounded-xl px-4 py-3 text-sm font-medium"></div>
+
+        <form id="showAssignPicForm" method="POST" action="{{ route('assignments.assign-pic.store', $assignment) }}" enctype="multipart/form-data" class="p-5 space-y-4">
           @csrf
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label class="block text-sm font-medium text-slate-700">
@@ -216,11 +218,11 @@
           </label>
 
           <div class="pt-2">
-            <button type="submit" class="inline-flex items-center gap-2 h-10 px-5 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
+            <button type="submit" id="showAssignPicSubmitBtn" class="inline-flex items-center gap-2 h-10 px-5 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
               </svg>
-              Simpan Penanggung Jawab
+              <span id="showAssignPicSubmitText">Simpan Penanggung Jawab</span>
             </button>
           </div>
         </form>
@@ -508,8 +510,94 @@
           </div>
         @else
           <div class="rounded-lg bg-slate-50 ring-1 ring-slate-200 px-4 py-3 text-sm text-slate-500">_</div>
-        @endif
-      </div>
-    </div>
-  </div>
 @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('showAssignPicForm');
+    const alertEl = document.getElementById('showAssignPicAlert');
+    const btn = document.getElementById('showAssignPicSubmitBtn');
+    const btnText = document.getElementById('showAssignPicSubmitText');
+    if (!form) return;
+
+    function showAlert(message, isError) {
+      if (!alertEl) return;
+      alertEl.textContent = message;
+      alertEl.className = isError
+        ? 'm-5 rounded-xl px-4 py-3 text-sm font-medium bg-rose-50 text-rose-700 ring-1 ring-rose-200'
+        : 'm-5 rounded-xl px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
+      alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideAlert() {
+      if (alertEl) {
+        alertEl.textContent = '';
+        alertEl.className = 'hidden m-5 rounded-xl px-4 py-3 text-sm font-medium';
+      }
+    }
+
+    function setLoading(loading) {
+      if (!btn || !btnText) return;
+      btn.disabled = loading;
+      btnText.textContent = loading ? 'Menyimpan...' : 'Simpan Penanggung Jawab';
+      btn.classList.toggle('opacity-60', loading);
+      btn.classList.toggle('cursor-not-allowed', loading);
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      hideAlert();
+      setLoading(true);
+
+      const formData = new FormData(form);
+      const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+      const fileInput = form.querySelector('input[type="file"][name="surat_balasan_kemenkum"]');
+      if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
+        formData.delete('surat_balasan_kemenkum');
+      }
+
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+        },
+        body: formData,
+      })
+      .then(async function(response) {
+        let data = null;
+        const contentType = response.headers.get('content-type') || '';
+        
+        if (contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          throw new Error('Respons server tidak valid (kemungkinan diblokir WAF atau sesi berakhir). Status: ' + response.status);
+        }
+
+        if (!response.ok || !data || data.success !== true) {
+          let errorMsg = (data && data.message) ? data.message : 'Terjadi kesalahan saat menyimpan data.';
+          if (data && data.errors) {
+            const errorList = Object.values(data.errors).flat();
+            if (errorList.length > 0) {
+              errorMsg = errorList.join(' ');
+            }
+          }
+          throw new Error(errorMsg);
+        }
+
+        showAlert(data.message || 'Penanggung jawab analisis berhasil ditetapkan', false);
+        setTimeout(function() {
+          window.location.href = data.redirect || window.location.href;
+        }, 800);
+      })
+      .catch(function(err) {
+        showAlert(err.message || 'Gagal mengirim data. Silakan coba lagi.', true);
+        setLoading(false);
+      });
+    });
+  });
+</script>
+@endpush

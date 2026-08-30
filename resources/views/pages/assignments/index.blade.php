@@ -341,6 +341,12 @@
           const formData = new FormData(form);
           const csrfToken = formData.get('_token') || document.querySelector('meta[name="csrf-token"]')?.content || '';
 
+          // Bersihkan file input jika tidak ada file yang dipilih agar tidak memicu deteksi anomali multipart pada WAF
+          const fileInput = form.querySelector('input[type="file"][name="surat_balasan_kemenkum"]');
+          if (fileInput && (!fileInput.files || fileInput.files.length === 0)) {
+            formData.delete('surat_balasan_kemenkum');
+          }
+
           fetch(form.action, {
             method: 'POST',
             headers: {
@@ -350,38 +356,35 @@
             },
             body: formData,
           })
-          .then(function(response) {
-            return response.json().then(function(data) {
-              return { status: response.status, ok: response.ok, data: data };
-            }).catch(function() {
-              // Response bukan JSON — kemungkinan WAF memblokir
-              if (!response.ok) {
-                return { status: response.status, ok: false, data: { success: false, message: 'Server mengembalikan respons tidak valid (kemungkinan diblokir WAF). Status: ' + response.status } };
-              }
-              // Sukses tapi bukan JSON — mungkin redirect HTML
-              return { status: response.status, ok: true, data: { success: true, message: 'Penanggung jawab analisis berhasil ditetapkan', redirect: '{{ route("assignments.index") }}' } };
-            });
-          })
-          .then(function(result) {
-            if (result.data.success) {
-              showAssignPicAlert(result.data.message || 'Berhasil!', false);
-              setTimeout(function() {
-                window.location.href = result.data.redirect || '{{ route("assignments.index") }}';
-              }, 800);
+          .then(async function(response) {
+            let data = null;
+            const contentType = response.headers.get('content-type') || '';
+            
+            if (contentType.includes('application/json')) {
+              data = await response.json();
             } else {
-              let errorMsg = result.data.message || 'Terjadi kesalahan.';
-              if (result.data.errors) {
-                const errorList = Object.values(result.data.errors).flat();
+              // Jika respons bukan JSON (kemungkinan WAF redirect atau HTML error)
+              throw new Error('Respons server tidak valid (kemungkinan diblokir WAF atau sesi berakhir). Status: ' + response.status);
+            }
+
+            if (!response.ok || !data || data.success !== true) {
+              let errorMsg = (data && data.message) ? data.message : 'Terjadi kesalahan saat menyimpan data.';
+              if (data && data.errors) {
+                const errorList = Object.values(data.errors).flat();
                 if (errorList.length > 0) {
                   errorMsg = errorList.join(' ');
                 }
               }
-              showAssignPicAlert(errorMsg, true);
-              setAssignPicLoading(false);
+              throw new Error(errorMsg);
             }
+
+            showAssignPicAlert(data.message || 'Penanggung jawab analisis berhasil ditetapkan', false);
+            setTimeout(function() {
+              window.location.href = data.redirect || '{{ route("assignments.index") }}';
+            }, 800);
           })
           .catch(function(err) {
-            showAssignPicAlert('Gagal mengirim data. Periksa koneksi internet Anda atau coba lagi. (' + (err.message || 'Network error') + ')', true);
+            showAssignPicAlert(err.message || 'Gagal mengirim data. Silakan coba lagi.', true);
             setAssignPicLoading(false);
           });
         });
