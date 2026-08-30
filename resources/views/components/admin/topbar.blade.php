@@ -1,12 +1,12 @@
 @php
-  $notificationCount = \App\Http\Controllers\NotificationController::countUnreadNotifications(auth()->user(), 30);
   $currentUser = auth()->user();
+  $notificationCount = $currentUser ? \App\Http\Controllers\NotificationController::countUnreadNotifications($currentUser, 30) : 0;
   $displayName = $currentUser?->name ?? 'Pengguna';
   $displayInstitution = $currentUser?->instansi?->nama_instansi ?? 'Kementerian Hukum Provinsi Riau';
   $roleName = $currentUser?->role?->value;
   $displayRole = $roleName === 'kakanwil'
     ? 'Kepala Kantor Wilayah'
-    : $currentUser?->role?->label();
+    : ($currentUser?->role?->label() ?? 'Pengguna');
 @endphp
 
 <header class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-slate-200">

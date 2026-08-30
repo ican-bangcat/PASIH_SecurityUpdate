@@ -130,10 +130,15 @@
                     </a>
 
                     @if($isKetuaTim)
-                      @if($assignment->status->value === 'assigned')
-                        <a href="{{ route('assignments.assign-pic.form', $assignment) }}" class="h-8 w-8 rounded-md text-white inline-flex items-center justify-center" style="background-color:#06B6D4" title="Tentukan Penanggung Jawab">
+                      @if(in_array($assignment->status->value, ['assigned', 'in_progress'], true))
+                        <button
+                          type="button"
+                          onclick="openAssignPicModal('{{ route('assignments.assign-pic.store', $assignment) }}', '{{ addslashes($submission->perda_title ?: '-') }}', '{{ addslashes($submission->submitter?->instansi?->nama_instansi ?? $submission->submitter?->name ?? '-') }}', '{{ $assignment->analyst_id ?? '' }}', '{{ optional($assignment->deadline_at)->format('Y-m-d') ?? '' }}')"
+                          class="h-8 w-8 rounded-md text-white inline-flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
+                          style="background-color:#06B6D4"
+                          title="Tentukan Penanggung Jawab">
                           <img src="{{ asset('icon/IC_Hand.svg') }}" alt="Ikon tangan" class="h-4 w-4" />
-                        </a>
+                        </button>
                       @else
                         <button type="button" class="h-8 w-8 rounded-md text-white inline-flex items-center justify-center cursor-not-allowed" style="background-color:#B9B9B9" title="Penanggung Jawab sudah ditentukan">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor">
@@ -197,4 +202,91 @@
       </div>
     </div>
   </div>
+
+  @if($isKetuaTim)
+    <div id="assignPicModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/50 backdrop-blur-sm p-4 flex items-center justify-center">
+      <div class="relative w-full max-w-xl rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Tentukan Penanggung Jawab</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Pilih analis dan batas waktu pengerjaan</p>
+          </div>
+          <button type="button" onclick="closeAssignPicModal()" class="text-slate-400 hover:text-slate-600 rounded-lg p-1.5 hover:bg-slate-100 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <form id="assignPicFormElement" method="POST" action="" enctype="multipart/form-data" class="p-6 space-y-4">
+          @csrf
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="block text-sm font-medium text-slate-700">
+              Judul Peraturan Daerah
+              <input type="text" id="modalPerdaTitle" disabled class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
+            </label>
+            <label class="block text-sm font-medium text-slate-700">
+              Instansi Pengaju
+              <input type="text" id="modalInstansiName" disabled class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] bg-slate-100 text-sm text-slate-500">
+            </label>
+          </div>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Penanggung Jawab Analisis <span class="text-red-500">*</span>
+            <select name="analyst_id" id="modalAnalystId" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm focus:outline-none focus:ring-0 focus:border-[#B9B9B9]" required>
+              <option value="">Pilih Analis</option>
+              @foreach($analysts as $analyst)
+                <option value="{{ $analyst->id }}">{{ $analyst->name }}</option>
+              @endforeach
+            </select>
+          </label>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Deadline <span class="text-red-500">*</span>
+            <input type="date" name="deadline_at" id="modalDeadlineAt" min="{{ now()->toDateString() }}" required class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm">
+          </label>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Upload Surat Balasan ke Pemda <span class="text-slate-400 text-xs font-normal">(Opsional)</span>
+            <p class="mt-1 text-xs text-slate-500">Format: PDF/DOC/DOCX, maksimal 10 MB.</p>
+            <input
+              type="file"
+              name="surat_balasan_kemenkum"
+              data-max-size="10485760"
+              accept=".pdf,.doc,.docx"
+              class="mt-2 block w-full rounded-xl border border-[#B9B9B9] bg-white text-sm text-slate-700 file:mr-3 file:rounded-l-xl file:border-0 file:bg-slate-100 file:px-4 file:py-3 file:text-base file:text-slate-700">
+          </label>
+
+          <div class="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
+            <button type="button" onclick="closeAssignPicModal()" class="h-10 px-4 rounded-md border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors">
+              Batal
+            </button>
+            <button type="submit" class="inline-flex items-center gap-2 h-10 px-5 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
+              </svg>
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function openAssignPicModal(actionUrl, perdaTitle, instansiName, analystId, deadlineAt) {
+        const modal = document.getElementById('assignPicModal');
+        const form = document.getElementById('assignPicFormElement');
+        if (!modal || !form) return;
+        form.action = actionUrl;
+        document.getElementById('modalPerdaTitle').value = perdaTitle || '-';
+        document.getElementById('modalInstansiName').value = instansiName || '-';
+        document.getElementById('modalAnalystId').value = analystId || '';
+        document.getElementById('modalDeadlineAt').value = deadlineAt || '';
+        modal.classList.remove('hidden');
+      }
+
+      function closeAssignPicModal() {
+        const modal = document.getElementById('assignPicModal');
+        if (modal) modal.classList.add('hidden');
+      }
+    </script>
+  @endif
 @endsection

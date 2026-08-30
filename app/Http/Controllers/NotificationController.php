@@ -370,7 +370,7 @@ class NotificationController extends Controller
 
     public static function countUnreadNotifications($user, int $limit = 30): int
     {
-        if ($user->role->value === 'admin') {
+        if (! $user || ! $user->role || $user->role->value === 'admin') {
             return 0;
         }
 
