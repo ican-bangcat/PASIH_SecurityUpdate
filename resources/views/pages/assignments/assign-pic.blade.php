@@ -41,17 +41,17 @@
 
         <label class="block text-sm font-medium text-slate-700">
           Penanggung Jawab Analisis <span class="text-red-500">*</span>
-          <select name="analyst_id" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm focus:outline-none focus:ring-0 focus:border-[#B9B9B9]" required>
+          <select name="user_petugas_id" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm focus:outline-none focus:ring-0 focus:border-[#B9B9B9]" required>
             <option value="">Pilih Analis</option>
             @foreach($analysts as $analyst)
-              <option value="{{ $analyst->id }}" @selected((string) old('analyst_id') === (string) $analyst->id)>{{ $analyst->name }}</option>
+              <option value="{{ $analyst->id }}" @selected((string) old('user_petugas_id', old('analyst_id')) === (string) $analyst->id)>{{ $analyst->name }}</option>
             @endforeach
           </select>
         </label>
 
         <label class="block text-sm font-medium text-slate-700">
           Deadline <span class="text-red-500">*</span>
-          <input type="date" name="deadline_at" min="{{ now()->toDateString() }}" required value="{{ old('deadline_at', optional($assignment->deadline_at)?->format('Y-m-d')) }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm">
+          <input type="date" name="batas_waktu" min="{{ now()->toDateString() }}" required value="{{ old('batas_waktu', old('deadline_at', optional($assignment->deadline_at)?->format('Y-m-d'))) }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm">
         </label>
 
         <label class="block text-sm font-medium text-slate-700">
@@ -59,11 +59,11 @@
           <p class="mt-1 text-xs text-slate-500">Format: PDF/DOC/DOCX, maksimal 10 MB.</p>
           <input
             type="file"
-            name="surat_balasan_kemenkum"
+            name="dokumen_balasan"
             data-max-size="10485760"
             accept=".pdf,.doc,.docx"
             class="mt-2 block w-full rounded-xl border border-[#B9B9B9] bg-white text-sm text-slate-700 file:mr-3 file:rounded-l-xl file:border-0 file:bg-slate-100 file:px-4 file:py-3 file:text-base file:text-slate-700">
-          @error('surat_balasan_kemenkum')
+          @error('dokumen_balasan')
             <p class="text-red-500 text-sm -mt-2">{{ $message }}</p>
           @enderror
         </label>

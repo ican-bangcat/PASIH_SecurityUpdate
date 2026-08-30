@@ -296,25 +296,43 @@ class AssignmentController extends Controller
 
         try {
             $validated = $request->validate([
-                'analyst_id' => ['required', 'exists:users,id'],
+                'user_petugas_id' => ['nullable', 'exists:users,id'],
+                'petugas_id' => ['nullable', 'exists:users,id'],
+                'analyst_id' => ['nullable', 'exists:users,id'],
+                'batas_waktu' => ['nullable', 'date'],
                 'deadline_at' => ['nullable', 'date'],
+                'dokumen_balasan' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx'],
                 'surat_balasan_kemenkum' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx'],
             ]);
 
-            $analyst = User::query()->findOrFail($validated['analyst_id']);
-            if ($analyst->role?->value !== 'analis_hukum') {
+            $analystId = $validated['user_petugas_id'] ?? $validated['petugas_id'] ?? $validated['analyst_id'] ?? null;
+            if (empty($analystId)) {
+                $errorMsg = 'Silakan pilih Penanggung Jawab Analisis terlebih dahulu.';
                 if ($isAjax) {
-                    return response()->json(['success' => false, 'message' => 'Pengguna yang dipilih bukan Analis Hukum.', 'errors' => ['analyst_id' => ['Pengguna yang dipilih bukan Analis Hukum.']]], 422);
+                    return response()->json(['success' => false, 'message' => $errorMsg, 'errors' => ['user_petugas_id' => [$errorMsg]]], 422);
                 }
 
-                return back()->withInput()->withErrors(['analyst_id' => 'Pengguna yang dipilih bukan Analis Hukum.']);
+                return back()->withInput()->withErrors(['user_petugas_id' => $errorMsg]);
+            }
+
+            $deadlineAt = $validated['batas_waktu'] ?? $validated['deadline_at'] ?? null;
+
+            $analyst = User::query()->findOrFail($analystId);
+            if ($analyst->role?->value !== 'analis_hukum') {
+                $errorMsg = 'Pengguna yang dipilih bukan Analis Hukum.';
+                if ($isAjax) {
+                    return response()->json(['success' => false, 'message' => $errorMsg, 'errors' => ['user_petugas_id' => [$errorMsg]]], 422);
+                }
+
+                return back()->withInput()->withErrors(['user_petugas_id' => $errorMsg]);
             }
 
             $stored = null;
-            if ($request->hasFile('surat_balasan_kemenkum')) {
+            $replyFile = $request->file('dokumen_balasan') ?? $request->file('surat_balasan_kemenkum');
+            if ($replyFile !== null) {
                 $file = $this->validateUploadedFile(
-                    $request->file('surat_balasan_kemenkum'),
-                    'surat_balasan_kemenkum',
+                    $replyFile,
+                    'dokumen_balasan',
                     'Upload surat balasan Kemenkum gagal. Pastikan ukuran file maksimal 10 MB dan berformat PDF/DOC/DOCX.'
                 );
                 $stored = $this->storeAssignmentFile(
@@ -324,14 +342,14 @@ class AssignmentController extends Controller
                 );
             }
 
-            DB::transaction(function () use ($request, $assignment, $analyst, $validated, $stored): void {
+            DB::transaction(function () use ($request, $assignment, $analyst, $deadlineAt, $stored): void {
                 $assignment->transitionStatus('in_progress', $request->user()->id);
 
                 AssignmentPicUpdate::query()->create([
                     'assignment_id' => $assignment->id,
                     'pic_assigned_by_id' => $request->user()->id,
                     'analyst_id' => $analyst->id,
-                    'deadline_at' => $validated['deadline_at'] ?? null,
+                    'deadline_at' => $deadlineAt,
                 ]);
 
                 if ($stored !== null) {
@@ -354,7 +372,7 @@ class AssignmentController extends Controller
                 $assignment,
                 $request->user(),
                 $analyst,
-                $validated['deadline_at'] ?? null
+                $deadlineAt
             );
 
             if ($stored !== null) {
