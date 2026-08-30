@@ -47,12 +47,12 @@
         </label>
 
         <label class="block text-sm font-medium text-slate-700">
-          Upload Surat Balasan ke Pemda <span class="text-red-500">*</span>
-          <p class="mt-1 text-xs text-slate-500">Format: PDF/DOC/DOCX, maksimal 5 MB.</p>
+          Upload Surat Balasan ke Pemda <span class="text-slate-400 text-xs font-normal">(Opsional)</span>
+          <p class="mt-1 text-xs text-slate-500">Format: PDF/DOC/DOCX, maksimal 10 MB.</p>
           <input
             type="file"
             name="surat_balasan_kemenkum"
-            required
+            data-max-size="10485760"
             accept=".pdf,.doc,.docx"
             class="mt-2 block w-full rounded-xl border border-[#B9B9B9] bg-white text-sm text-slate-700 file:mr-3 file:rounded-l-xl file:border-0 file:bg-slate-100 file:px-4 file:py-3 file:text-base file:text-slate-700">
           @error('surat_balasan_kemenkum')

@@ -264,7 +264,11 @@ class WorkflowNotificationService
             return;
         }
 
-        $recipient->notify($notification);
+        try {
+            $recipient->notify($notification);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Gagal mengirim email notifikasi ke {$recipient->email}: ".$e->getMessage());
+        }
     }
 
     /**
@@ -276,13 +280,17 @@ class WorkflowNotificationService
             return;
         }
 
-        NotificationFacade::send(
-            $recipients
-                ->filter(fn (User $user) => filled($user->email))
-                ->unique('id')
-                ->values(),
-            $notification
-        );
+        try {
+            NotificationFacade::send(
+                $recipients
+                    ->filter(fn (User $user) => filled($user->email))
+                    ->unique('id')
+                    ->values(),
+                $notification
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Gagal mengirim email notifikasi massal: '.$e->getMessage());
+        }
     }
 
     private function submissionNumber(Submission $submission): string

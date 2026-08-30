@@ -260,7 +260,7 @@ class AssignmentController extends Controller
         abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
         abort_unless($assignment->status->value === 'assigned', 422);
 
-        $assignment->load(['submission']);
+        $assignment->load(['submission.submitter.instansi']);
 
         return view('pages.assignments.assign-pic', [
             'assignment' => $assignment,
@@ -281,22 +281,25 @@ class AssignmentController extends Controller
         $validated = $request->validate([
             'analyst_id' => ['required', 'exists:users,id'],
             'deadline_at' => ['nullable', 'date'],
-            'surat_balasan_kemenkum' => ['required', 'file', 'max:5120', 'mimes:pdf,doc,docx'],
+            'surat_balasan_kemenkum' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx'],
         ]);
 
         $analyst = User::query()->findOrFail($validated['analyst_id']);
         abort_unless($analyst->role->value === 'analis_hukum', 422);
 
-        $file = $this->validateUploadedFile(
-            $request->file('surat_balasan_kemenkum'),
-            'surat_balasan_kemenkum',
-            'Upload surat balasan Kemenkum gagal. Pastikan ukuran file tidak melebihi batas server.'
-        );
-        $stored = $this->storeAssignmentFile(
-            $file,
-            $assignment->submission?->submitter?->instansi?->nama_instansi ?? $assignment->submission?->submitter?->name ?? 'Instansi',
-            'Surat Balasan Kemenkum'
-        );
+        $stored = null;
+        if ($request->hasFile('surat_balasan_kemenkum')) {
+            $file = $this->validateUploadedFile(
+                $request->file('surat_balasan_kemenkum'),
+                'surat_balasan_kemenkum',
+                'Upload surat balasan Kemenkum gagal. Pastikan ukuran file maksimal 10 MB dan berformat PDF/DOC/DOCX.'
+            );
+            $stored = $this->storeAssignmentFile(
+                $file,
+                $assignment->submission?->submitter?->instansi?->nama_instansi ?? $assignment->submission?->submitter?->name ?? 'Instansi',
+                'Surat Balasan Kemenkum'
+            );
+        }
 
         DB::transaction(function () use ($request, $assignment, $analyst, $validated, $stored): void {
             $assignment->transitionStatus('in_progress', $request->user()->id);
@@ -308,18 +311,20 @@ class AssignmentController extends Controller
                 'deadline_at' => $validated['deadline_at'] ?? null,
             ]);
 
-            AssignmentKemenkumReplyDocument::query()->updateOrCreate(
-                ['assignment_id' => $assignment->id],
-                [
-                    'submission_id' => $assignment->submission_id,
-                    'uploaded_by' => $request->user()->id,
-                    'file_name' => $stored['file_name'],
-                    'file_path' => $stored['file_path'],
-                    'mime_type' => $stored['mime_type'],
-                    'file_size' => $stored['file_size'],
-                    'kategori_surat' => 'surat_tugas',
-                ]
-            );
+            if ($stored !== null) {
+                AssignmentKemenkumReplyDocument::query()->updateOrCreate(
+                    ['assignment_id' => $assignment->id],
+                    [
+                        'submission_id' => $assignment->submission_id,
+                        'uploaded_by' => $request->user()->id,
+                        'file_name' => $stored['file_name'],
+                        'file_path' => $stored['file_path'],
+                        'mime_type' => $stored['mime_type'],
+                        'file_size' => $stored['file_size'],
+                        'kategori_surat' => 'surat_tugas',
+                    ]
+                );
+            }
         });
 
         $this->workflowNotificationService->notifyAssignmentPicAssigned(
@@ -329,10 +334,12 @@ class AssignmentController extends Controller
             $validated['deadline_at'] ?? null
         );
 
-        $this->workflowNotificationService->notifySubmitterReplyLetterAvailable(
-            $assignment,
-            $request->user()
-        );
+        if ($stored !== null) {
+            $this->workflowNotificationService->notifySubmitterReplyLetterAvailable(
+                $assignment,
+                $request->user()
+            );
+        }
 
         return redirect()->route('assignments.index')->with('success', 'Penanggung jawab analisis berhasil ditetapkan');
     }
@@ -534,7 +541,16 @@ class AssignmentController extends Controller
     {
         $destinationPath = public_path('storage/penugasan');
 
-        if (! is_dir($destinationPath) && ! mkdir($destinationPath, 0755, true) && ! is_dir($destinationPath)) {
+        if (! is_dir($destinationPath)) {
+            @mkdir($destinationPath, 0755, true);
+        }
+
+        $storageAppPath = storage_path('app/public/penugasan');
+        if (! is_dir($storageAppPath)) {
+            @mkdir($storageAppPath, 0755, true);
+        }
+
+        if (! is_dir($destinationPath) && ! is_dir($storageAppPath)) {
             throw ValidationException::withMessages([
                 'file' => 'Folder upload penugasan tidak dapat dibuat.',
             ]);
