@@ -267,35 +267,11 @@ class AssignmentController extends Controller
 
     public function assignPicForm(Request $request, Assignment $assignment)
     {
-        try {
-            if ($request->user()?->role?->value !== 'ketua_tim_analisis') {
-                return redirect()->route('assignments.index')->with('error', 'Hanya Ketua Tim Analisis yang berwenang menentukan penanggung jawab analisis.');
-            }
-
-            if (! in_array($assignment->status->value, ['assigned', 'in_progress'], true)) {
-                return redirect()->route('assignments.index')->with('error', 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.');
-            }
-
-            $assignment->load(['submission.submitter.instansi']);
-
-            return response()
-                ->view('pages.assignments.assign-pic', [
-                    'assignment' => $assignment,
-                    'analysts' => User::query()
-                        ->whereHas('roleRef', function ($roleQuery): void {
-                            $roleQuery->where('nama_role', 'analis_hukum');
-                        })
-                        ->orderBy('name')
-                        ->get(),
-                ])
-                ->header('Content-Type', 'text/html; charset=UTF-8');
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Error pada assignPicForm: '.$e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return redirect()->route('assignments.index')->with('error', 'Gagal memuat form penugasan: '.$e->getMessage());
+        if ($request->user()?->role?->value !== 'ketua_tim_analisis') {
+            return redirect()->route('assignments.index')->with('error', 'Hanya Ketua Tim Analisis yang berwenang menentukan penanggung jawab analisis.');
         }
+
+        return redirect()->to(route('assignments.show', $assignment).'#form-penugasan');
     }
 
     public function assignPicStore(Request $request, Assignment $assignment)
