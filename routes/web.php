@@ -214,17 +214,17 @@ Route::middleware('auth')->group(function () {
             ->whereNumber('submission')
             ->name('submissions.rejection-reply.store');
 
-        Route::get('/assignments/{assignment}/tentukan-analis', [AssignmentController::class, 'assignPicForm'])
-            ->whereNumber('assignment')
-            ->name('assignments.assign-pic.form');
-        Route::post('/assignments/{assignment}/tentukan-analis', [AssignmentController::class, 'assignPicStore'])
+        Route::post('/assignments/{assignment}', [AssignmentController::class, 'assignPicStore'])
             ->whereNumber('assignment')
             ->name('assignments.assign-pic.store');
 
+        Route::get('/assignments/{assignment}/tentukan-analis', [AssignmentController::class, 'assignPicForm'])
+            ->whereNumber('assignment')
+            ->name('assignments.assign-pic.form');
+
         // Backward compatibility fallback
-        Route::get('/assignments/{assignment}/assign-pic', function (Assignment $assignment) {
-            return redirect()->route('assignments.assign-pic.form', $assignment);
-        })->whereNumber('assignment');
+        Route::get('/assignments/{assignment}/assign-pic', [AssignmentController::class, 'assignPicForm'])
+            ->whereNumber('assignment');
         Route::post('/assignments/{assignment}/assign-pic', [AssignmentController::class, 'assignPicStore'])
             ->whereNumber('assignment');
     });
