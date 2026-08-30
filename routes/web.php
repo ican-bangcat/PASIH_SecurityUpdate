@@ -214,12 +214,19 @@ Route::middleware('auth')->group(function () {
             ->whereNumber('submission')
             ->name('submissions.rejection-reply.store');
 
-        Route::get('/assignments/{assignment}/assign-pic', [AssignmentController::class, 'assignPicForm'])
+        Route::get('/assignments/{assignment}/tentukan-analis', [AssignmentController::class, 'assignPicForm'])
             ->whereNumber('assignment')
             ->name('assignments.assign-pic.form');
-        Route::post('/assignments/{assignment}/assign-pic', [AssignmentController::class, 'assignPicStore'])
+        Route::post('/assignments/{assignment}/tentukan-analis', [AssignmentController::class, 'assignPicStore'])
             ->whereNumber('assignment')
             ->name('assignments.assign-pic.store');
+
+        // Backward compatibility fallback
+        Route::get('/assignments/{assignment}/assign-pic', function (Assignment $assignment) {
+            return redirect()->route('assignments.assign-pic.form', $assignment);
+        })->whereNumber('assignment');
+        Route::post('/assignments/{assignment}/assign-pic', [AssignmentController::class, 'assignPicStore'])
+            ->whereNumber('assignment');
     });
 
     Route::middleware('role:analis_hukum')->group(function () {

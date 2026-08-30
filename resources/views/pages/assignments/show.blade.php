@@ -166,6 +166,67 @@
       </div>
     </div>
 
+    @if(auth()->user()?->role?->value === 'ketua_tim_analisis' && in_array($assignment->status->value, ['assigned', 'in_progress'], true))
+      <div id="form-penugasan" class="rounded-xl bg-white ring-1 ring-slate-200 overflow-hidden shadow-sm">
+        <div class="px-5 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">Penetapan Penanggung Jawab Analisis (PIC)</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Tentukan Analis Hukum yang bertugas dan batas waktu pengerjaan analisis.</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded bg-cyan-100 text-cyan-800">Ketua Tim Analisis</span>
+        </div>
+
+        @if($errors->any())
+          <div class="m-5 rounded-xl bg-rose-50 text-rose-700 ring-1 ring-rose-200 px-4 py-3 text-sm font-medium">
+            {{ $errors->first() }}
+          </div>
+        @endif
+
+        <form method="POST" action="{{ route('assignments.assign-pic.store', $assignment) }}" enctype="multipart/form-data" class="p-5 space-y-4">
+          @csrf
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="block text-sm font-medium text-slate-700">
+              Penanggung Jawab Analisis <span class="text-red-500">*</span>
+              <select name="analyst_id" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm focus:outline-none focus:ring-0 focus:border-[#B9B9B9]" required>
+                <option value="">Pilih Analis</option>
+                @foreach($analysts as $analyst)
+                  <option value="{{ $analyst->id }}" @selected((string) old('analyst_id', $assignment->analyst_id) === (string) $analyst->id)>{{ $analyst->name }}</option>
+                @endforeach
+              </select>
+            </label>
+
+            <label class="block text-sm font-medium text-slate-700">
+              Deadline <span class="text-red-500">*</span>
+              <input type="date" name="deadline_at" min="{{ now()->toDateString() }}" required value="{{ old('deadline_at', optional($assignment->deadline_at)->format('Y-m-d')) }}" class="mt-2 w-full h-10 px-4 py-2 rounded-md border border-[#B9B9B9] text-sm">
+            </label>
+          </div>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Upload Surat Balasan ke Pemda <span class="text-slate-400 text-xs font-normal">(Opsional)</span>
+            <p class="mt-1 text-xs text-slate-500">Format: PDF/DOC/DOCX, maksimal 10 MB.</p>
+            <input
+              type="file"
+              name="surat_balasan_kemenkum"
+              data-max-size="10485760"
+              accept=".pdf,.doc,.docx"
+              class="mt-2 block w-full rounded-xl border border-[#B9B9B9] bg-white text-sm text-slate-700 file:mr-3 file:rounded-l-xl file:border-0 file:bg-slate-100 file:px-4 file:py-3 file:text-base file:text-slate-700">
+            @error('surat_balasan_kemenkum')
+              <p class="text-red-500 text-sm -mt-2">{{ $message }}</p>
+            @enderror
+          </label>
+
+          <div class="pt-2">
+            <button type="submit" class="inline-flex items-center gap-2 h-10 px-5 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 4v12m0 0l-4-4m4 4l4-4" />
+              </svg>
+              Simpan Penanggung Jawab
+            </button>
+          </div>
+        </form>
+      </div>
+    @endif
+
     <div class="rounded-xl bg-white ring-1 ring-slate-200 p-5 md:p-6">
       <div class="flex items-start justify-between gap-4 flex-wrap">
         <div>

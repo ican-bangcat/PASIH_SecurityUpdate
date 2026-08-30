@@ -119,8 +119,18 @@ class AssignmentController extends Controller
             abort_unless($assignment->analyst_id === $request->user()->id, 403);
         }
 
+        $analysts = ($role === 'ketua_tim_analisis' && in_array($assignment->status->value, ['assigned', 'in_progress'], true))
+            ? User::query()
+                ->whereHas('roleRef', function ($roleQuery): void {
+                    $roleQuery->where('nama_role', 'analis_hukum');
+                })
+                ->orderBy('name')
+                ->get()
+            : collect();
+
         return view('pages.assignments.show', [
             'assignment' => $assignment,
+            'analysts' => $analysts,
         ]);
     }
 
@@ -268,15 +278,17 @@ class AssignmentController extends Controller
 
             $assignment->load(['submission.submitter.instansi']);
 
-            return view('pages.assignments.assign-pic', [
-                'assignment' => $assignment,
-                'analysts' => User::query()
-                    ->whereHas('roleRef', function ($roleQuery): void {
-                        $roleQuery->where('nama_role', 'analis_hukum');
-                    })
-                    ->orderBy('name')
-                    ->get(),
-            ]);
+            return response()
+                ->view('pages.assignments.assign-pic', [
+                    'assignment' => $assignment,
+                    'analysts' => User::query()
+                        ->whereHas('roleRef', function ($roleQuery): void {
+                            $roleQuery->where('nama_role', 'analis_hukum');
+                        })
+                        ->orderBy('name')
+                        ->get(),
+                ])
+                ->header('Content-Type', 'text/html; charset=UTF-8');
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Error pada assignPicForm: '.$e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
