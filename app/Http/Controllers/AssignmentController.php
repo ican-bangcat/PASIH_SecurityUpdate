@@ -257,29 +257,44 @@ class AssignmentController extends Controller
 
     public function assignPicForm(Request $request, Assignment $assignment)
     {
-        abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
+        try {
+            if ($request->user()?->role?->value !== 'ketua_tim_analisis') {
+                return redirect()->route('assignments.index')->with('error', 'Hanya Ketua Tim Analisis yang berwenang menentukan penanggung jawab analisis.');
+            }
 
-        if (! in_array($assignment->status->value, ['assigned', 'in_progress'], true)) {
-            return redirect()->route('assignments.index')->with('error', 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.');
+            if (! in_array($assignment->status->value, ['assigned', 'in_progress'], true)) {
+                return redirect()->route('assignments.index')->with('error', 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.');
+            }
+
+            $assignment->load(['submission.submitter.instansi']);
+
+            return view('pages.assignments.assign-pic', [
+                'assignment' => $assignment,
+                'analysts' => User::query()
+                    ->whereHas('roleRef', function ($roleQuery): void {
+                        $roleQuery->where('nama_role', 'analis_hukum');
+                    })
+                    ->orderBy('name')
+                    ->get(),
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error pada assignPicForm: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('assignments.index')->with('error', 'Gagal memuat form penugasan: '.$e->getMessage());
         }
-
-        $assignment->load(['submission.submitter.instansi']);
-
-        return view('pages.assignments.assign-pic', [
-            'assignment' => $assignment,
-            'analysts' => User::query()
-                ->whereHas('roleRef', function ($roleQuery): void {
-                    $roleQuery->where('nama_role', 'analis_hukum');
-                })
-                ->orderBy('name')
-                ->get(),
-        ]);
     }
 
     public function assignPicStore(Request $request, Assignment $assignment)
     {
-        abort_unless($request->user()->role->value === 'ketua_tim_analisis', 403);
-        abort_unless(in_array($assignment->status->value, ['assigned', 'in_progress'], true), 422);
+        if ($request->user()?->role?->value !== 'ketua_tim_analisis') {
+            return redirect()->route('assignments.index')->with('error', 'Hanya Ketua Tim Analisis yang berwenang menentukan penanggung jawab analisis.');
+        }
+
+        if (! in_array($assignment->status->value, ['assigned', 'in_progress'], true)) {
+            return redirect()->route('assignments.index')->with('error', 'Penugasan ini tidak dalam status yang dapat ditentukan Penanggung Jawabnya.');
+        }
 
         try {
             $validated = $request->validate([
@@ -289,7 +304,9 @@ class AssignmentController extends Controller
             ]);
 
             $analyst = User::query()->findOrFail($validated['analyst_id']);
-            abort_unless($analyst->role->value === 'analis_hukum', 422);
+            if ($analyst->role?->value !== 'analis_hukum') {
+                return back()->withInput()->withErrors(['analyst_id' => 'Pengguna yang dipilih bukan Analis Hukum.']);
+            }
 
             $stored = null;
             if ($request->hasFile('surat_balasan_kemenkum')) {

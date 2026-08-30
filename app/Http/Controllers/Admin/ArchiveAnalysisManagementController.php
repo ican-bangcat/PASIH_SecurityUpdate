@@ -90,7 +90,7 @@ class ArchiveAnalysisManagementController extends Controller
             ->value('id') ?? $request->user()->id;
 
         DB::transaction(function () use ($request, $validated, $completedDate, $instansiName, $submitterId): void {
-            $submission = new Submission();
+            $submission = new Submission;
             $submission->forceFill([
                 'submitter_id' => $submitterId,
                 'nomor_surat' => $validated['nomor_surat'],
@@ -122,7 +122,7 @@ class ArchiveAnalysisManagementController extends Controller
             );
             $storedPerda = $this->storeFile($perdaFile, 'permohonan', $instansiName, 'Peraturan Daerah', $completedDate);
 
-            $perdaDoc = new SubmissionDocument();
+            $perdaDoc = new SubmissionDocument;
             $perdaDoc->forceFill([
                 'submission_id' => $submission->id,
                 'uploaded_by' => $request->user()->id,
@@ -139,7 +139,7 @@ class ArchiveAnalysisManagementController extends Controller
 
             // Disable booted() auto-status-log so we can set timestamps manually
             $assignment = Assignment::withoutEvents(function () use ($request, $submission, $completedDate) {
-                $model = new Assignment();
+                $model = new Assignment;
                 $model->forceFill([
                     'submission_id' => $submission->id,
                     'assigned_by_id' => $request->user()->id,
@@ -154,7 +154,7 @@ class ArchiveAnalysisManagementController extends Controller
             });
 
             // Manually create the "assigned" + "completed" status logs with correct timestamps
-            $assignedLog = new AssignmentStatusLog();
+            $assignedLog = new AssignmentStatusLog;
             $assignedLog->forceFill([
                 'assignment_id' => $assignment->id,
                 'user_id' => $request->user()->id,
@@ -165,7 +165,7 @@ class ArchiveAnalysisManagementController extends Controller
             $assignedLog->timestamps = false;
             $assignedLog->save();
 
-            $completedLog = new AssignmentStatusLog();
+            $completedLog = new AssignmentStatusLog;
             $completedLog->forceFill([
                 'assignment_id' => $assignment->id,
                 'user_id' => $request->user()->id,
@@ -176,7 +176,7 @@ class ArchiveAnalysisManagementController extends Controller
             $completedLog->timestamps = false;
             $completedLog->save();
 
-            $approval = new AssignmentAnalysisApproval();
+            $approval = new AssignmentAnalysisApproval;
             $approval->forceFill([
                 'assignment_id' => $assignment->id,
                 'assigned_by_id' => $request->user()->id,
@@ -195,7 +195,7 @@ class ArchiveAnalysisManagementController extends Controller
             );
             $storedAnalisis = $this->storeFile($analisisFile, 'penugasan', $instansiName, 'Hasil Analisis', $completedDate);
 
-            $analysisDoc = new AssignmentDocument();
+            $analysisDoc = new AssignmentDocument;
             $analysisDoc->forceFill([
                 'assignment_id' => $assignment->id,
                 'uploaded_by' => $request->user()->id,

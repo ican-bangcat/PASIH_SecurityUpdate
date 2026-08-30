@@ -14,8 +14,12 @@ class EnsureUserRole
         $user?->loadMissing('roleRef');
         $userRole = $user?->role?->value;
 
-        if (! $user || ! in_array($userRole, $roles, true)) {
-            abort(403);
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        if (! in_array($userRole, $roles, true)) {
+            return redirect()->route('dashboard')->with('error', 'Akses ditolak: Akun Anda saat ini ('.$user->name.') tidak memiliki izin untuk halaman ini.');
         }
 
         return $next($request);

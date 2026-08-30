@@ -136,4 +136,3 @@ class DocumentPreviewController extends Controller
         return collect($candidatePaths)->first(static fn ($path) => is_file($path));
     }
 }
-

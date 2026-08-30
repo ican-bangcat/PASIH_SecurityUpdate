@@ -8,7 +8,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Akses Ditolak — PASIH</title>
   <link rel="icon" type="image/png" href="{{ asset('images/logo_pasih_perda.png') }}">
-  @vite(['resources/css/app.css'])
+  @if (file_exists(public_path('build/manifest.json')))
+    @vite(['resources/css/app.css'])
+  @else
+    <script src="https://cdn.tailwindcss.com"></script>
+  @endif
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-lg text-center space-y-6">
